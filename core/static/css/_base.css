@@ -1,3 +1,41 @@
+li {
+  list-style: none;
+}
+
 .main {
-  padding: 4rem;
+  padding: 8rem;
+  width: 100%;
+}
+
+.login__form {
+  max-width: 48rem;
+}
+
+.sidebar {
+  width: 28rem;
+  height: 100vh;
+}
+
+.w-12 {
+  max-width: 3rem;
+}
+
+.w-24 {
+  max-width: 6rem;
+}
+
+.w-48 {
+  max-width: 12rem;
+}
+
+.w-72 {
+  max-width: 18rem;
+}
+
+.w-96 {
+  max-width: 24rem;
+}
+
+.p-12 {
+  padding: 3rem;
 }

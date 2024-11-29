@@ -29,6 +29,7 @@ DEBUG = config("DJANGO_DEBUG")
 
 ALLOWED_HOSTS = []
 
+LOGIN_URL='login'
 
 # Application definition
 
@@ -72,6 +73,11 @@ TEMPLATES = [
 
 WSGI_APPLICATION = 'core.wsgi.application'
 
+AUTHENTICATION_BACKENDS = [
+    'django.contrib.auth.backends.ModelBackend',
+]
+
+SESSION_ENGINE = 'django.contrib.sessions.backends.db'
 
 # Database
 # https://docs.djangoproject.com/en/5.1/ref/settings/#databases

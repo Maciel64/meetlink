@@ -2,6 +2,8 @@
 
 {% block main %}
 
+<h1>Bem vindo a Home {{ user.first_name }} {{ user.last_name }}</h1>
+
 <button data-js="initCallButton" class="btn btn-primary">Iniciar chamada</button>
 <button data-js="endCallButton" class="btn btn-primary">Finalizar chamada</button>
 {% endblock %}
