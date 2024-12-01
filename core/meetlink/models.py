@@ -9,11 +9,17 @@ class Role(models.TextChoices) :
   TOTEM = 'TOTEM', 'Totem'
   INTERPRETER = 'INTERPRETER', 'Intérprete'
 
+  class Meta :
+    verbose_name = 'Permissão'
+    verbose_name_plural = 'Permissões'
+
+
 class User(AbstractUser) :
   role = models.CharField(
     max_length=20,
     choices=Role.choices,
-    default=Role.MANAGER
+    default=Role.MANAGER,
+    verbose_name='Permissão'
   )
 
   groups = models.ManyToManyField(
