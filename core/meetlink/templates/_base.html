@@ -1,46 +1,33 @@
 {% load static %}
 <!DOCTYPE html>
 <html lang="pt-br">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>
+      Acesse MeetLink - NatalShopping | {% block title %}Defina um título para
+      sua página{% endblock %}
+    </title>
+    <link
+      rel="stylesheet"
+      href="{% static 'css/bootstrap.min.css' %}"
+      crossorigin="anonymous"
+    />
+    <link rel="stylesheet" href="{% static 'css/_base.css' %}" />
+  </head>
 
-<head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Acesse MeetLink - NatalShopping | {% block title %}Defina um título para sua página{% endblock %}</title>
-  <link rel="stylesheet" href="{% static 'css/bootstrap.min.css' %}" crossorigin="anonymous">
-  <link rel="stylesheet" href="{% static 'css/_base.css' %}">
-</head>
+  <body class="d-flex">
+    {% if not hide_sidebar %} {% include '_sidebar.html' %} {% endif %}
 
-<body class="d-flex">
-  {% if not hide_sidebar %}
-  <aside class="sidebar shadow-lg p-12 d-flex flex-column align-items-center">
-    <ul>
-      <li>
-        <a href="/">
-          <img class="w-72" src="{% static 'img/natal_shopping_logo_white.jpg' %}" alt="Natal shopping logo ciano">
-        </a>
-      </li>
-      <li>
-        <a href="/">
-          Gestão
-        </a>
-      </li>
-      <li>Histórico de agendamentos</li>
-      <li>
-        <a href="/logout">
-          Sair
-        </a>
-      </li>
-    </ul>
-  </aside>
-  {% endif %}
+    <main class="main">
+      {% block main %}
+      <p>Carregue o bloco 'main'</p>
+      {% endblock %}
+    </main>
 
-  <main class="main">
-    {% block main %}
-    <p>Carregue o bloco 'main'</p>
-    {% endblock %}
-  </main>
-
-  <script src="{% static 'js/bootstrap.bundle.min.js' %}" crossorigin="anonymous"></script>
-</body>
-
+    <script
+      src="{% static 'js/bootstrap.bundle.min.js' %}"
+      crossorigin="anonymous"
+    ></script>
+  </body>
 </html>

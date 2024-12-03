@@ -1,0 +1,25 @@
+{% load static %}
+<aside class="sidebar shadow-lg p-12 d-flex flex-column align-items-center">
+    <ul class="d-flex flex-column gap-1 h-100">
+        <li>
+            <a href="/">
+                <img class="w-72" src="{% static 'img/natal_shopping_logo_white.jpg' %}"
+                    alt="Natal shopping logo ciano" />
+            </a>
+        </li>
+        <li class="rounded-2 bg-primary-color d-flex">
+            <a class="w-100 h-100 p-3 text-white" href="/dashboard"> Gestão </a>
+        </li>
+        <li class="rounded-2 d-flex hover:bg-primary-color">
+            <a class="w-100 h-100 p-3 text-primary-color hover:text-white" href="/call">Histórico de agendamentos</a>
+        </li>
+        {% if user.role in roles %}
+        <li class="rounded-2 d-flex hover:bg-primary-color">
+            <a class="w-100 h-100 p-3 text-primary-color hover:text-white" href="/totem">Visão do Totem</a>
+        </li>
+        {% endif %}
+        <li class="rounded-2 d-flex mt-auto hover:bg-primary-color">
+            <a class="w-100 h-100 p-3 text-primary-color hover:text-white" href="/logout">Sair</a>
+        </li>
+    </ul>
+</aside>

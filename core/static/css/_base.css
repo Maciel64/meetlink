@@ -1,3 +1,11 @@
+:root {
+    --primary-color: #113445;
+}
+
+a {
+    text-decoration: none;
+}
+
 li {
   list-style: none;
 }
@@ -38,4 +46,31 @@ li {
 
 .p-12 {
   padding: 3rem;
+}
+
+.bg-primary-color {
+    background-color: var(--primary-color);
+}
+
+.hover\:bg-primary-color:hover {
+    transition: background-color 100ms ease;
+    background-color: var(--primary-color);
+}
+
+.hover\:bg-primary-color:hover .hover\:text-white {
+    transition: color 100ms ease;
+    color: white;
+}
+
+.text-primary-color {
+    color: var(--primary-color);
+}
+
+.text-white {
+    color: white;
+}
+
+.hover\:text-white:hover {
+    transition: color 100ms ease;
+    color: var(--primary-color);
 }
