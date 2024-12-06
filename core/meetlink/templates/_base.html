@@ -1,33 +1,29 @@
 {% load static %}
 <!DOCTYPE html>
 <html lang="pt-br">
-  <head>
+
+<head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>
-      Acesse MeetLink - NatalShopping | {% block title %}Defina um título para
-      sua página{% endblock %}
+        Acesse MeetLink - NatalShopping | {% block title %}Defina um título para
+        sua página{% endblock %}
     </title>
-    <link
-      rel="stylesheet"
-      href="{% static 'css/bootstrap.min.css' %}"
-      crossorigin="anonymous"
-    />
+    <link rel="stylesheet" href="{% static 'css/bootstrap.min.css' %}" crossorigin="anonymous" />
     <link rel="stylesheet" href="{% static 'css/_base.css' %}" />
-  </head>
+</head>
 
-  <body class="d-flex">
+<body class="d-flex">
     {% if not hide_sidebar %} {% include '_sidebar.html' %} {% endif %}
 
     <main class="main">
-      {% block main %}
-      <p>Carregue o bloco 'main'</p>
-      {% endblock %}
+        {% block main %}
+        <p>Carregue o bloco 'main'</p>
+        {% endblock %}
     </main>
 
-    <script
-      src="{% static 'js/bootstrap.bundle.min.js' %}"
-      crossorigin="anonymous"
-    ></script>
-  </body>
+    <script src="{% static 'js/bootstrap.bundle.min.js' %}" crossorigin="anonymous"></script>
+    <script src="{% static 'js/main.js' %}"></script>
+</body>
+
 </html>

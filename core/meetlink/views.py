@@ -9,9 +9,18 @@ from .forms import LoginForm
 from .exceptions import LoginDataIsInvalidException, UserEmailOrPasswordIsInvalidException
 from .models import Role, User
 from django.shortcuts import redirect, render
-from django.views.decorators.http import require_http_methods
 
 # Create your views here.
+
+@login_required
+def index(request) :
+    user: User = request.user
+
+    if user.role in (Role.SUPERADMIN, Role.MANAGER, Role.INTERPRETER) :
+      return redirect('dashboard')
+
+    return redirect('totem')
+
 
 @login_required
 def totem(request) :
@@ -22,11 +31,13 @@ def totem(request) :
 
     return render(request, 'totem.html', { 'user': user })
 
+
 @login_required
 def dashboard(request) :
   user = request.user
 
   return render(request, 'dashboard.html', { 'user': user })
+
 
 class LoginView(View) :
     def get(self, request):

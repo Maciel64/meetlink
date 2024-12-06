@@ -4,6 +4,10 @@
 
 {% block main %}
 
-<h1>Início - {{ user.get_role_display }}</h1>
+<h1 class="mb-5">Início - {{ user.get_role_display }}</h1>
+
+<button class="p-12 rounded-3 btn btn-primary" data-js="testButton">
+    Ainda sem chamadas
+</button>
 
 {% endblock %}
