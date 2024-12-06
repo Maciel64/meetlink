@@ -8,6 +8,9 @@ django = "*"
 python-decouple = "*"
 channels = "*"
 daphne = "*"
+google-apps-meet = "*"
+google-auth-httplib2 = "*"
+google-auth-oauthlib = "*"
 
 [dev-packages]
 
