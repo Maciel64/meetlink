@@ -2,12 +2,16 @@
 
 {% block title %}Dashboard{% endblock %}
 
+{% load static %}
+
 {% block main %}
 
 <h1 class="mb-5">Início - {{ user.get_role_display }}</h1>
 
-<button class="p-12 rounded-3 btn btn-primary" data-js="testButton">
+<button class="p-12 rounded-3 btn btn-primary" data-js="enter-call-button" disabled>
     Ainda sem chamadas
 </button>
+
+<audio data-js="audio-phone-ring" src="{% static '/aud/ring_phone.wav' %}"></audio>
 
 {% endblock %}

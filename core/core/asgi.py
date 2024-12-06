@@ -11,7 +11,7 @@ from django.core.asgi import get_asgi_application
 from django.urls import re_path
 from channels.routing import ProtocolTypeRouter, URLRouter
 from channels.auth import AuthMiddlewareStack
-from meetlink.consumers import CallEventConsumer
+from meetlink.consumers import CallConsumer
 import os
 
 from django.core.asgi import get_asgi_application
@@ -22,7 +22,7 @@ application = ProtocolTypeRouter({
     'http': get_asgi_application(),
     'websocket': AuthMiddlewareStack(
         URLRouter([
-            re_path('ws/calls/?$', CallEventConsumer.as_asgi()),
+            re_path('ws/calls/?$', CallConsumer.as_asgi()),
         ])
     ),
 })

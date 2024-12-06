@@ -78,3 +78,39 @@ li {
 .disabled\:bg-grey:disabled {
     background-color: #C5C5C5;
 }
+
+@keyframes ring {
+    0% {
+      box-shadow: 0 0 0 0 rgba(0, 123, 255, 0.5);
+    }
+    100% {
+      box-shadow: 0 0 0 10px rgba(0, 123, 255, 0);
+    }
+  }
+  
+.ring {
+animation: ring 1.5s infinite;
+border-radius: 50%;
+}
+
+@keyframes spin {
+    0% {
+      transform: rotate(0deg);
+    }
+    25% {
+      transform: rotate(5deg);
+    }
+    50% {
+      transform: rotate(-5deg);
+    }
+    75% {
+      transform: rotate(3deg);
+    }
+    100% {
+      transform: rotate(0deg);
+    }
+  }
+  
+.spin {
+animation: spin 0.8s ease-in-out infinite;
+}

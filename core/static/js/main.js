@@ -4,16 +4,25 @@ const chatSocket = new WebSocket(
 const requestCallButtonDOM = document.querySelector(
   "[data-js=request-call-button]"
 );
+const enterCallButton = document.querySelector("[data-js=enter-call-button]");
 
-const testButton = document.querySelector("[data-js=testButton]");
+const audioPhoneRing = document.querySelector("[data-js=audio-phone-ring]");
 
-testButton.addEventListener("click", () => {
-  chatSocket.send(JSON.stringify({ message: "TEstabdi" }));
-});
+/** Server sent events */
 
 chatSocket.onmessage = function (e) {
   const data = JSON.parse(e.data);
-  console.log("Mensagem recebida do outro cliente:", data.message);
+
+  if (data.event == "MANAGER_NEEDED") {
+    if (enterCallButton) {
+      enterCallButton.disabled = false;
+      enterCallButton.innerHTML = "Gerente sendo solicitado!";
+      enterCallButton.classList.add("ring");
+      audioPhoneRing.play();
+    }
+  }
+
+  console.log("Mensagem recebida do outro cliente:", data.event);
 };
 
 chatSocket.onclose = function (e) {
@@ -24,7 +33,14 @@ chatSocket.onerror = function (e) {
   console.log("Erro na conexão ", e);
 };
 
-requestCallButtonDOM.addEventListener("click", function () {
-  const message = "Mensagem do botão!";
-  chatSocket.send(JSON.stringify({ message: message }));
+/** Client side events */
+
+requestCallButtonDOM?.addEventListener("click", function () {
+  chatSocket.send(JSON.stringify({ event: "MANAGER_NEEDED" }));
+});
+
+enterCallButton?.addEventListener("click", function () {
+  enterCallButton.innerHTML = "Entrando na chamada!";
+  enterCallButton.classList.remove("ring");
+  chatSocket.send(JSON.stringify({ event: "MANAGER_ENTERING" }));
 });

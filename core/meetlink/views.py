@@ -29,7 +29,7 @@ def totem(request) :
     if user.role in (Role.MANAGER, Role.INTERPRETER) :
       return redirect('dashboard')
 
-    return render(request, 'totem.html', { 'user': user })
+    return render(request, 'totem.html', { 'user': user, 'hide_sidebar': True })
 
 
 @login_required
