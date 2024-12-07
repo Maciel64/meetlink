@@ -1,7 +1,7 @@
 from typing import List, Protocol
 
-from meetlink.exceptions.call_exceptions import CallNotFoundException
-from meetlink.repositories.call_repository import ICallRepository
+from meetlink.domain.call.call_exceptions import CallNotFoundException
+from meetlink.domain.call.call_repository import ICallRepository
 from meetlink.models import Call
 
 

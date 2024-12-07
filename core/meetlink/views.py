@@ -4,11 +4,11 @@ from django.contrib.auth.hashers import check_password
 from django.views import View
 from django.views.generic import TemplateView
 
-from meetlink.adapters.call_adapter import GoogleMeetAdapter
+from meetlink.domain.call.call_adapter import GoogleMeetAdapter
 
 from .forms import LoginForm
 
-from .exceptions.user_exceptions import LoginDataIsInvalidException, UserEmailOrPasswordIsInvalidException
+from .domain.user.user_exceptions import LoginDataIsInvalidException, UserEmailOrPasswordIsInvalidException
 from .models import Role, User
 from django.shortcuts import redirect, render
 
