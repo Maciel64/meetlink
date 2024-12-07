@@ -8,7 +8,7 @@ from meetlink.adapters.call_adapter import GoogleMeetAdapter
 
 from .forms import LoginForm
 
-from .exceptions import LoginDataIsInvalidException, UserEmailOrPasswordIsInvalidException
+from .exceptions.user_exceptions import LoginDataIsInvalidException, UserEmailOrPasswordIsInvalidException
 from .models import Role, User
 from django.shortcuts import redirect, render
 
