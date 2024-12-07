@@ -68,8 +68,10 @@ class Call(models.Model):
         verbose_name='Assunto'
     )
     description = models.TextField(verbose_name='Descrição')
-    created_at = models.DateTimeField(auto_now_add=True, verbose_name='Data de Criação')
-    updated_at = models.DateTimeField(auto_now=True, verbose_name='Data de Atualização')
+    created_at = models.DateTimeField(auto_now_add=True, verbose_name='Hora Solicitação')
+    manager_entered_at = models.DateTimeField(verbose_name='Hora de Entrada do Gestor', blank=True, null=True)
+    interpreter_entered_at = models.DateTimeField(verbose_name='Hora de Entrada do Intérprete', blank=True, null=True)
+    updated_at = models.DateTimeField(auto_now=True, verbose_name='Hora Atualização')
 
     def __str__(self):
         return f"Call by {self.responsible.username} on {self.created_at}"
