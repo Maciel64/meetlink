@@ -7,6 +7,13 @@ const requestCallButtonDOM = document.querySelector(
 const enterCallButton = document.querySelector("[data-js=enter-call-button]");
 
 const audioPhoneRing = document.querySelector("[data-js=audio-phone-ring]");
+const managerMeetingFrame = document.querySelector(
+  "[data-js=manager-call-frame]"
+);
+
+const managerEnterCallButton = document.querySelector(
+  "[data-js=manager-enter-call-button]"
+);
 
 /** Server sent events */
 
@@ -43,4 +50,9 @@ enterCallButton?.addEventListener("click", function () {
   enterCallButton.innerHTML = "Entrando na chamada!";
   enterCallButton.classList.remove("ring");
   chatSocket.send(JSON.stringify({ event: "MANAGER_ENTERING" }));
+});
+
+managerEnterCallButton?.addEventListener("click", function () {
+  managerMeetingFrame.src =
+    managerEnterCallButton.getAttribute("data-meet-url");
 });

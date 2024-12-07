@@ -4,6 +4,8 @@ from django.contrib.auth.hashers import check_password
 from django.views import View
 from django.views.generic import TemplateView
 
+from meetlink.adapters.call_adapter import GoogleMeetAdapter
+
 from .forms import LoginForm
 
 from .exceptions import LoginDataIsInvalidException, UserEmailOrPasswordIsInvalidException
@@ -63,15 +65,22 @@ class LoginView(View) :
             return render(request, 'login.html', { "hide_sidebar": True, "error": 'Usuário não encontrado' })
 
         except Exception as e:
-            return render(request, 'login.html', { "hide_sidebar": True, "error": 'Email ou senha não inválidos' })
+            return render(request, 'login.html', { "hide_sidebar": True, "error": e.__str__ })
 
   
 def logout_view(request) :
   user = request.user
 
-  if not user :
-    return redirect('index')
-  
-  logout(request)
+  if user :
+    logout(request)
 
   return redirect('index')
+
+
+@login_required
+def create_call(request) :
+    call_adapter = GoogleMeetAdapter()
+
+    call = call_adapter.create_call()
+
+    return render(request, 'create_call.html', { "call_uri": call.call_uri })
