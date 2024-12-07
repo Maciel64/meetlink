@@ -58,6 +58,8 @@ class Call(models.Model):
         'User', 
         on_delete=models.CASCADE, 
         related_name='calls',
+        blank=True,
+        null=True,
         verbose_name='Responsável'
     )
     subject = models.ForeignKey(
@@ -67,11 +69,11 @@ class Call(models.Model):
         blank=True,
         verbose_name='Assunto'
     )
-    description = models.TextField(verbose_name='Descrição')
+    description = models.TextField(verbose_name='Descrição', blank=True, null=True)
     created_at = models.DateTimeField(auto_now_add=True, verbose_name='Hora Solicitação')
     manager_entered_at = models.DateTimeField(verbose_name='Hora de Entrada do Gestor', blank=True, null=True)
     interpreter_entered_at = models.DateTimeField(verbose_name='Hora de Entrada do Intérprete', blank=True, null=True)
-    updated_at = models.DateTimeField(auto_now=True, verbose_name='Hora Atualização')
+    updated_at = models.DateTimeField(verbose_name='Hora Atualização', blank=True, null=True)
 
     def __str__(self):
         return f"Call by {self.responsible.username} on {self.created_at}"
