@@ -1,58 +1,69 @@
 const chatSocket = new WebSocket(
   "ws://" + window.location.hostname + ":8001" + "/ws/calls"
 );
-const requestCallButtonDOM = document.querySelector(
-  "[data-js=request-call-button]"
-);
-const enterCallButton = document.querySelector("[data-js=enter-call-button]");
-
-const audioPhoneRing = document.querySelector("[data-js=audio-phone-ring]");
-const managerMeetingFrame = document.querySelector(
-  "[data-js=manager-call-frame]"
-);
-
 const managerEnterCallButton = document.querySelector(
   "[data-js=manager-enter-call-button]"
 );
+const requestCallButtonDOM = document.querySelector(
+  "[data-js=request-call-button]"
+);
+
+const audioPhoneRing = document.querySelector("[data-js=audio-phone-ring]");
 
 /** Server sent events */
 
-chatSocket.onmessage = function (e) {
-  const data = JSON.parse(e.data);
-
-  if (data.event == "MANAGER_NEEDED") {
-    if (enterCallButton) {
-      enterCallButton.disabled = false;
-      enterCallButton.innerHTML = "Gerente sendo solicitado!";
-      enterCallButton.classList.add("ring");
-      audioPhoneRing.play();
-    }
-  }
-
-  console.log("Mensagem recebida do outro cliente:", data.event);
-};
-
-chatSocket.onclose = function (e) {
-  console.error("Conexão WebSocket fechada inesperadamente");
-};
-
-chatSocket.onerror = function (e) {
-  console.log("Erro na conexão ", e);
-};
+chatSocket.onmessage = handleEventIncoming;
+chatSocket.onclose = handleWebsocketConectionClosed;
+chatSocket.onerror = handleWebsocketConectionError;
 
 /** Client side events */
 
-requestCallButtonDOM?.addEventListener("click", function () {
-  chatSocket.send(JSON.stringify({ event: "MANAGER_NEEDED" }));
-});
+managerEnterCallButton?.addEventListener("click", handleManagerEnterCallButton);
+requestCallButtonDOM?.addEventListener("click", handleRequestCallButtonClick);
 
-enterCallButton?.addEventListener("click", function () {
-  enterCallButton.innerHTML = "Entrando na chamada!";
-  enterCallButton.classList.remove("ring");
+/** Custom Functions */
+
+const eventHandlers = {
+  MANAGER_NEEDED: function () {
+    if (managerEnterCallButton) {
+      managerEnterCallButton.disabled = false;
+      managerEnterCallButton.innerHTML = "Gerente sendo solicitado!";
+      managerEnterCallButton.classList.add("ring");
+      audioPhoneRing.play();
+    }
+  },
+
+  MANAGER_ENTERING: function () {
+    console.log("Manager Entering");
+  },
+};
+
+function handleEventIncoming(e) {
+  const event = JSON.parse(e.data).event;
+  const eventIsNotInHandlers = !(event in eventHandlers);
+
+  if (eventIsNotInHandlers) {
+    return console.error("Evento não registrado: ", event);
+  }
+
+  eventHandlers[event]();
+  console.log("Mensagem recebida do outro cliente:", event);
+}
+
+function handleWebsocketConectionClosed(e) {
+  console.error("Conexão WebSocket fechada inesperadamente");
+}
+
+function handleWebsocketConectionError(e) {
+  console.log("Erro na conexão ", e);
+}
+
+function handleManagerEnterCallButton() {
+  managerEnterCallButton.innerHTML = "Entrando na chamada!";
+  managerEnterCallButton.classList.remove("ring");
   chatSocket.send(JSON.stringify({ event: "MANAGER_ENTERING" }));
-});
+}
 
-managerEnterCallButton?.addEventListener("click", function () {
-  managerMeetingFrame.src =
-    managerEnterCallButton.getAttribute("data-meet-url");
-});
+function handleRequestCallButtonClick() {
+  chatSocket.send(JSON.stringify({ event: "MANAGER_NEEDED" }));
+}

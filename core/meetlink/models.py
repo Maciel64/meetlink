@@ -74,6 +74,7 @@ class Call(models.Model):
     manager_entered_at = models.DateTimeField(verbose_name='Hora de Entrada do Gestor', blank=True, null=True)
     interpreter_entered_at = models.DateTimeField(verbose_name='Hora de Entrada do Intérprete', blank=True, null=True)
     updated_at = models.DateTimeField(verbose_name='Hora Atualização', blank=True, null=True)
+    finished_at = models.DateTimeField(verbose_name='Hora Finalização', blank=True, null=True)
 
     def __str__(self):
         return f"Call by {self.responsible.username} on {self.created_at}"
