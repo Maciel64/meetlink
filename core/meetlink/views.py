@@ -4,6 +4,9 @@ from django.contrib.auth.hashers import check_password
 from django.views import View
 from django.views.generic import TemplateView
 
+from meetlink.domain.call.call_repository import CallRepository
+from meetlink.domain.user.user_repository import UserRepository
+from meetlink.domain.call.call_service import CallService
 from meetlink.domain.call.call_adapter import GoogleMeetAdapter
 
 from .forms import LoginForm
@@ -84,3 +87,27 @@ def create_call(request) :
     call = call_adapter.create_call()
 
     return render(request, 'create_call.html', { "call_uri": call.call_uri })
+
+
+@login_required
+def calls_index(request) :
+    call_repository = CallRepository()
+    user_repository = UserRepository()
+
+    call_service = CallService(call_repository, user_repository)
+
+    calls = call_service.get_all()
+
+    return render(request, 'calls/index.html', { 'calls': calls })
+
+
+@login_required
+def calls_show(request, id) :
+    call_repository = CallRepository()
+    user_repository = UserRepository()
+
+    call_service = CallService(call_repository, user_repository)
+
+    call = call_service.get(id)
+
+    return render(request, 'calls/show.html', { 'call': call })

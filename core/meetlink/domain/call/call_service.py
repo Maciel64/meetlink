@@ -1,4 +1,3 @@
-from datetime import date
 from typing import List, Protocol
 
 from django.utils import timezone
@@ -49,6 +48,9 @@ class CallService(ICallService) :
             raise CallNotFoundException()
         
         return call
+    
+    def get_all(self) :
+        return self.call_repository.get_all()
     
 
     def create(self):

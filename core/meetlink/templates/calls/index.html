@@ -1,0 +1,35 @@
+{% extends '_base.html' %}
+
+{% block title %}Histórico de chamadas{% endblock %}
+
+{% load static %}
+
+{% block main %}
+
+<h1 class="mb-5">Histórico de chamadas</h1>
+
+{% if calls %}
+<table class="w-100">
+    <thead>
+        <th></th>
+        <th>Responsável</th>
+        <th>Início</th>
+        <th>Fim</th>
+        <th>Visualizar</th>
+    </thead>
+
+    <tbody>
+        {% for call in calls %}
+        <td>Atendimento #{{ call.id }}</td>
+        <td>{{ call.responsible }}</td>
+        <td>{{ call.created_at|date:"d/m/Y" }}</td>
+        <td>{{ call.created_at|time:"H:i" }}</td>
+        <td><a class="btn btn-primary" href="/calls/{{ call.id }}">Visualizar</a></td>
+        {% endfor %}
+    </tbody>
+</table>
+{% else %}
+
+{% endif %}
+
+{% endblock %}
