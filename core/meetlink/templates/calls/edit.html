@@ -1,0 +1,30 @@
+{% extends '_base.html' %}
+
+{% block title %}Editar dados da chamada {{ call.id }}{% endblock %}
+
+{% load static %}
+
+{% block main %}
+
+<h1 class="mb-5">Atendimento #{{ call.id }} | {{ call.responsible }} | {{ call.created_at|date:"d/m/Y" }}</h1>
+
+
+<form action="/calls/{{ call.id }}">
+    <div class="mb-3 d-flex flex-column">
+        <label for="description" class="form-label">Descrição</label>
+        <textarea type="text" name="description" id="description" class="form-control"></textarea>
+    </div>
+
+    <div class="mb-3 d-flex flex-column">
+        <label for="exampleInputEmail1" class="form-label">Assunto</label>
+        <select name="subject" class="form-select">
+            {% for subject in subjects %}
+            <option value="{{ subject.id }}">{{ subject.name }}</option>
+            {% endfor %}
+        </select>
+    </div>
+
+    <button class="btn btn-primary" type="submit">Confirmar</button>
+</form>
+
+{% endblock %}

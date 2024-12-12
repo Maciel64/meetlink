@@ -4,6 +4,7 @@ from django.contrib.auth.hashers import check_password
 from django.views import View
 from django.views.generic import TemplateView
 
+from meetlink.domain.subject.subject_repository import SubjectRepository
 from meetlink.domain.call.call_repository import CallRepository
 from meetlink.domain.user.user_repository import UserRepository
 from meetlink.domain.call.call_service import CallService
@@ -101,13 +102,19 @@ def calls_index(request) :
     return render(request, 'calls/index.html', { 'calls': calls })
 
 
-@login_required
-def calls_show(request, id) :
-    call_repository = CallRepository()
-    user_repository = UserRepository()
+class CallsEdit(View) :
+    def __init__(self):
+       self.call_repository = CallRepository()
+       self.user_repository = UserRepository()
+       self.subject_repository = SubjectRepository()
 
-    call_service = CallService(call_repository, user_repository)
+       self.call_service = CallService(self.call_repository, self.user_repository)
 
-    call = call_service.get(id)
+    def get(self, request, id) :
+        call = self.call_service.get(id)
+        subjects = self.subject_repository.get_all()
 
-    return render(request, 'calls/show.html', { 'call': call })
+        return render(request, 'calls/edit.html', { 'call': call, 'subjects': subjects })
+
+    def post(self, request, id) :
+       pass
