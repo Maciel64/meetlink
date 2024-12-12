@@ -51,8 +51,8 @@ class LoginView(View) :
     def post(self, request) :
         try :
             data = LoginForm(request.POST)
-            
-            if not data.is_valid :
+
+            if not data.is_valid() :
                 raise LoginDataIsInvalidException()
 
             user = User.objects.get(email=data.cleaned_data["email"])
