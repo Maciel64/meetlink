@@ -22,15 +22,10 @@ class ISubjectRepository(Protocol) :
 
 class SubjectRepository(ISubjectRepository) :
     def get(self, subject_id) :
-        try :
-            return Subject.objects.get(id=subject_id)
-        
-        except Subject.DoesNotExist :
-            return None
+        return Subject.objects.filter(id=subject_id).first()
         
     def get_all(self):
         return Subject.objects.all()
-    
 
     def create(self):
         return Subject.objects.create(Subject)

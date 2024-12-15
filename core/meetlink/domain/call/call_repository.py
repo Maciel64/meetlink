@@ -13,7 +13,7 @@ class ICallRepository(Protocol) :
     def create(self) -> Call :
         pass
 
-    def update(self, call_id: int, call: Call) -> Call :
+    def update(self, call: Call) -> Call :
         pass
 
     def delete(self, call_id: int) -> None :
@@ -22,11 +22,7 @@ class ICallRepository(Protocol) :
 
 class CallRepository(ICallRepository) :
     def get(self, call_id) :
-        try :
-            return Call.objects.get(id=call_id)
-        
-        except Call.DoesNotExist :
-            return None
+        return Call.objects.filter(id=call_id).first()
         
     def get_all(self):
         return Call.objects.all()
@@ -35,8 +31,10 @@ class CallRepository(ICallRepository) :
     def create(self):
         return Call.objects.create()
 
-    def update(self, call_id, call) :
-        pass
+    def update(self, call) :
+        Call.objects.update()
+        call.save()
+        return call
 
     def delete(self, call_id) :
         pass

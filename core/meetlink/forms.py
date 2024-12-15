@@ -9,3 +9,9 @@ class LoginForm(forms.Form) :
     password = forms.CharField(widget=forms.PasswordInput, required=True, error_messages={
         "required": "O campo senha é obrigatório."
     })
+
+class EditCallForm(forms.Form) :
+    description = forms.CharField(max_length=500, required=False, error_messages={
+        "max_length": "Máximo de 500 caracteres"
+    })
+    subject = forms.CharField(required=False)
