@@ -1,0 +1,39 @@
+[tool.black]
+line-length = 88
+target-version = ['py313']
+exclude = '''
+/(
+    \.git
+  | \.mypy_cache
+  | \.pytest_cache
+  | \.venv
+  | _build
+  | buck-out
+  | build
+  | dist
+  | migrations
+)/  
+'''
+
+[tool.flake8]
+max-line-length = 88
+ignore = ["E203", "W503"]
+select = ["E", "F", "W"]
+exclude = [
+    ".git",
+    "__pycache__",
+    "migrations",
+    "venv",
+]
+per-file-ignores = [
+    "tests/*.py: E501",
+]
+
+[tool.isort]
+profile = "black"  # Compatível com Black
+line_length = 88
+multi_line_output = 3
+include_trailing_comma = true
+known_third_party = ["django", "requests"]  # Bibliotecas externas
+known_local_folder = ["meuprojeto"]        # Módulos locais
+sections = ["FUTURE", "STDLIB", "THIRDPARTY", "FIRSTPARTY", "LOCALFOLDER"]

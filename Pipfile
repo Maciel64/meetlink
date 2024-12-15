@@ -11,6 +11,9 @@ daphne = "*"
 google-apps-meet = "*"
 google-auth-httplib2 = "*"
 google-auth-oauthlib = "*"
+flake8 = "*"
+black = "*"
+isort = "*"
 
 [dev-packages]
 
