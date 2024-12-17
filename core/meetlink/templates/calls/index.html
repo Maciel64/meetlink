@@ -9,22 +9,26 @@
 <h1 class="mb-5">Histórico de chamadas</h1>
 
 {% if calls %}
-<table class="w-100">
+<table class="w-100 table">
     <thead>
-        <th></th>
-        <th>Responsável</th>
-        <th>Início</th>
-        <th>Fim</th>
-        <th>Visualizar</th>
+        <tr>
+            <th></th>
+            <th>Responsável</th>
+            <th>Início</th>
+            <th>Fim</th>
+            <th>Visualizar</th>
+        </tr>
     </thead>
 
     <tbody>
         {% for call in calls %}
-        <td>Atendimento #{{ call.id }} - {{ call.created_at|date:"d/m/Y" }}</td>
-        <td>{{ call.responsible }}</td>
-        <td>{{ call.created_at|time:"H:i" }}</td>
-        <td>{{ call.finished_at|time:"H:i" }}</td>
-        <td><a class="btn btn-primary" href="/calls/{{ call.id }}">Visualizar</a></td>
+        <tr>
+            <td>Atendimento #{{ call.id }} - {{ call.created_at|date:"d/m/Y" }}</td>
+            <td>{{ call.responsible }}</td>
+            <td>{{ call.created_at|time:"H:i" }}</td>
+            <td>{{ call.finished_at|time:"H:i" }}</td>
+            <td><a class="btn btn-primary" href="/calls/{{ call.id }}">Visualizar</a></td>
+        </tr>
         {% endfor %}
     </tbody>
 </table>
