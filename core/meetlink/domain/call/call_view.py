@@ -1,3 +1,5 @@
+from django.contrib.auth.decorators import login_required
+from django.shortcuts import redirect, render
 from django.utils.decorators import method_decorator
 from django.views import View
 from meetlink.domain.call.call_adapter import GoogleMeetAdapter
@@ -5,11 +7,6 @@ from meetlink.domain.call.call_repository import CallRepository
 from meetlink.domain.call.call_service import CallService
 from meetlink.domain.subject.subject_repository import SubjectRepository
 from meetlink.domain.user.user_repository import UserRepository
-
-from django.shortcuts import redirect, render
-
-from django.contrib.auth.decorators import login_required
-
 from meetlink.forms import EditCallForm
 
 

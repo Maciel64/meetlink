@@ -5,9 +5,7 @@ from django.shortcuts import redirect, render
 from django.views import View
 
 from .domain.user.user_exceptions import (
-    LoginDataIsInvalidException,
-    UserEmailOrPasswordIsInvalidException,
-)
+    LoginDataIsInvalidException, UserEmailOrPasswordIsInvalidException)
 from .forms import LoginForm
 from .models import Role, User
 

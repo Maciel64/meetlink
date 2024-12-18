@@ -1,7 +1,7 @@
 from django.urls import path
+from meetlink.domain.call import call_view
 
 from . import views
-from meetlink.domain.call import call_view
 
 urlpatterns = [
     path("", views.index, name="index"),
