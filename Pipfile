@@ -15,6 +15,7 @@ flake8 = "*"
 black = "*"
 isort = "*"
 pre-commit = "*"
+djangorestframework = "*"
 
 [dev-packages]
 
