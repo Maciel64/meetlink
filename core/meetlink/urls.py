@@ -1,7 +1,12 @@
-from django.urls import path
+from django.urls import include, path
 from meetlink.domain.call import call_view
+from rest_framework.routers import SimpleRouter
 
 from . import views
+
+router = SimpleRouter()
+
+router.register("calls", call_view.CallAPI, basename="calls")
 
 urlpatterns = [
     path("", views.index, name="index"),
@@ -11,6 +16,6 @@ urlpatterns = [
     path("dashboard/", views.dashboard, name="dashboard"),
     path("calls/", call_view.calls_index, name="calls_index"),
     path("calls/<int:id>", call_view.CallsEdit.as_view(), name="calls_edit"),
-    path("api/calls", call_view.CallsApi.as_view(), name="calls_api_create"),
+    path("api/", include(router.urls)),
     # path("create_call/", views.create_call, name="create_call")
 ]

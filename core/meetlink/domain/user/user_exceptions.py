@@ -1,4 +1,5 @@
 from meetlink.models import Role
+from rest_framework.exceptions import NotFound, ValidationError
 
 
 class UserEmailOrPasswordIsInvalidException(Exception):
@@ -21,11 +22,11 @@ class InvalidUserRoleException(Exception):
         )
 
 
-class ManagerIdNotPassedException(Exception):
+class ManagerIdNotPassedException(ValidationError):
     def __init__(self):
         super().__init__("O Id do gestor não foi passado")
 
 
-class ManagerNotFoundException(Exception):
+class ManagerNotFoundException(NotFound):
     def __init__(self):
         super().__init__("O gestor solicitado não foi encontrado")

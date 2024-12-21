@@ -34,6 +34,6 @@ profile = "black"  # Compatível com Black
 line_length = 88
 multi_line_output = 3
 include_trailing_comma = true
-known_third_party = ["django", "requests"]  # Bibliotecas externas
+known_third_party = ["django", "requests", "rest_framework"]  # Bibliotecas externas
 known_local_folder = ["meuprojeto"]        # Módulos locais
 sections = ["FUTURE", "STDLIB", "THIRDPARTY", "FIRSTPARTY", "LOCALFOLDER"]

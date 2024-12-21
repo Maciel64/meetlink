@@ -7,7 +7,7 @@ from .models import Call, Subject, User
 
 @admin.register(User)
 class UserAdmin(admin.ModelAdmin):
-    list_display = ("username", "email", "role", "is_staff", "is_active")
+    list_display = ("id", "username", "email", "role", "is_staff", "is_active")
     list_filter = ("role", "is_staff", "is_active")
 
 

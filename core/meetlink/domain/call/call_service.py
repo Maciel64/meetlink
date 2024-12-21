@@ -1,14 +1,18 @@
 from typing import List, Protocol
 
 from django.utils import timezone
-from meetlink.domain.call.call_exceptions import (CallIdNotPassedException,
-                                                  CallNotFoundException,
-                                                  EditCallFormException)
+from meetlink.domain.call.call_exceptions import (
+    CallIdNotPassedException,
+    CallNotFoundException,
+    EditCallFormException,
+)
 from meetlink.domain.call.call_repository import ICallRepository
 from meetlink.domain.subject.subject_repository import ISubjectRepository
-from meetlink.domain.user.user_exceptions import (InvalidUserRoleException,
-                                                  ManagerIdNotPassedException,
-                                                  ManagerNotFoundException)
+from meetlink.domain.user.user_exceptions import (
+    InvalidUserRoleException,
+    ManagerIdNotPassedException,
+    ManagerNotFoundException,
+)
 from meetlink.domain.user.user_repository import IUserRepository
 from meetlink.forms import EditCallForm
 from meetlink.models import Call, Role
@@ -81,7 +85,7 @@ class CallService(ICallService):
         if not manager:
             raise ManagerNotFoundException()
 
-        if manager.role in (Role.SUPERADMIN, Role.MANAGER):
+        if manager.role not in (Role.SUPERADMIN, Role.MANAGER):
             raise InvalidUserRoleException(manager.first_name, manager.role)
 
         call = self.call_repository.get(call_id)

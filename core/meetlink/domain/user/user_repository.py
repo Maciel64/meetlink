@@ -26,7 +26,7 @@ class IUserRepository(Protocol):
 
 class UserRepository(IUserRepository):
     def get(self, user_id: int) -> Call | None:
-        pass
+        return User.objects.filter(id=user_id).first()
 
     def get_all(self) -> List[Call]:
         pass

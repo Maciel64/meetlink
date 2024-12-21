@@ -4,10 +4,16 @@ from django.utils.decorators import method_decorator
 from django.views import View
 from meetlink.domain.call.call_adapter import GoogleMeetAdapter
 from meetlink.domain.call.call_repository import CallRepository
+from meetlink.domain.call.call_serializer import CallSerializer
 from meetlink.domain.call.call_service import CallService
 from meetlink.domain.subject.subject_repository import SubjectRepository
 from meetlink.domain.user.user_repository import UserRepository
 from meetlink.forms import EditCallForm
+from rest_framework import status
+from rest_framework.decorators import action
+from rest_framework.exceptions import APIException
+from rest_framework.response import Response
+from rest_framework.viewsets import ViewSet
 
 
 @login_required
@@ -68,3 +74,34 @@ class CallsEdit(View):
             request.session["error"] = str(e)
 
         return redirect("calls_edit", id=id)
+
+
+class CallAPI(ViewSet):
+    def __init__(self, **kwargs):
+        super().__init__(**kwargs)
+        self.call_repository = CallRepository()
+        self.user_repository = UserRepository()
+        self.subject_repository = SubjectRepository()
+
+        self.call_service = CallService(
+            self.call_repository, self.user_repository, self.subject_repository
+        )
+
+    def list(self, request):
+        serialized_calls = CallSerializer(self.call_service.get_all(), many=True)
+        return Response(serialized_calls.data, status=status.HTTP_200_OK)
+
+    def create(self, request):
+        print(request.data)
+        serialized_call = CallSerializer(self.call_service.create())
+        return Response(serialized_call.data, status=status.HTTP_201_CREATED)
+
+    @action(detail=True, methods=["post"])
+    def insert_manager(self, request, pk=None):
+        try:
+            serialized_call = CallSerializer(
+                self.call_service.insert_manager(pk, request.data["manager_id"])
+            )
+            return Response(serialized_call.data, status=status.HTTP_200_OK)
+        except APIException as e:
+            return Response(str(e), status=e.status_code)
