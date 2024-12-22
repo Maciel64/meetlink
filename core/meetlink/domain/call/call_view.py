@@ -33,7 +33,7 @@ def calls_index(request):
 
     call_service = CallService(call_repository, user_repository, subject_repository)
 
-    calls = call_service.get_all()
+    calls = call_service.get_all({"created_at": "desc"})
 
     return render(request, "calls/index.html", {"calls": calls})
 

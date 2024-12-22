@@ -23,17 +23,22 @@ class CallConsumer(AsyncWebsocketConsumer):
 
             if event in self.EVENT_HANDLERS:
                 await self.channel_layer.group_send(
-                    self.room_group_name, {"event": event, "type": event.lower()}
+                    self.room_group_name,
+                    {"event": event, "type": event.lower(), "data": data},
                 )
 
         except Exception as e:
-            print(text_data)
+            print(data)
             print("Erro ao decodificar JSON: ", e)
 
     async def manager_needed(self, event):
         await self.send(
             text_data=json.dumps(
-                {"event": event["event"], "message": "Gerente necessário!"}
+                {
+                    "event": event["event"],
+                    "message": "Gerente necessário!",
+                    "call": event["data"]["call"],
+                }
             )
         )
 

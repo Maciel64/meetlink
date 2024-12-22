@@ -1,3 +1,9 @@
+/** Helpers */
+
+var call = null;
+
+/** DOM manipulation */
+
 const chatSocket = new WebSocket(
   "ws://" + window.location.hostname + ":8001" + "/ws/calls"
 );
@@ -9,6 +15,45 @@ const requestCallButtonDOM = document.querySelector(
 );
 
 const audioPhoneRing = document.querySelector("[data-js=audio-phone-ring]");
+
+/** Requests service */
+
+function getCookie(name) {
+  let cookieValue = null;
+  if (document.cookie && document.cookie !== "") {
+    const cookies = document.cookie.split(";");
+    for (let i = 0; i < cookies.length; i++) {
+      const cookie = cookies[i].trim();
+      if (cookie.substring(0, name.length + 1) === name + "=") {
+        cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+        break;
+      }
+    }
+  }
+  return cookieValue;
+}
+
+const api = {
+  baseUrl: "http://localhost:8000/api",
+
+  get: async function (url) {
+    const response = await fetch(this.baseUrl + url);
+    return response.json();
+  },
+
+  post: async function (url, data) {
+    const csrftoken = getCookie("csrftoken");
+    const response = await fetch(this.baseUrl + url, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        "X-CSRFToken": csrftoken,
+      },
+      body: JSON.stringify(data),
+    });
+    return response.json();
+  },
+};
 
 /** Server sent events */
 
@@ -24,30 +69,31 @@ requestCallButtonDOM?.addEventListener("click", handleRequestCallButtonClick);
 /** Custom Functions */
 
 const eventHandlers = {
-  MANAGER_NEEDED: function () {
+  MANAGER_NEEDED: async function (data) {
     if (managerEnterCallButton) {
       managerEnterCallButton.disabled = false;
       managerEnterCallButton.innerHTML = "Gerente sendo solicitado!";
       managerEnterCallButton.classList.add("ring");
       audioPhoneRing.play();
+
+      call = data.call;
     }
   },
 
-  MANAGER_ENTERING: function () {
-    console.log("Manager Entering");
+  MANAGER_ENTERING: function (data) {
+    console.log("Gerente entrando na chamada");
   },
 };
 
 function handleEventIncoming(e) {
-  const event = JSON.parse(e.data).event;
-  const eventIsNotInHandlers = !(event in eventHandlers);
+  const data = JSON.parse(e.data);
+  const eventIsNotInHandlers = !(data.event in eventHandlers);
 
   if (eventIsNotInHandlers) {
     return console.error("Evento não registrado: ", event);
   }
 
-  eventHandlers[event]();
-  console.log("Mensagem recebida do outro cliente:", event);
+  eventHandlers[data.event](data);
 }
 
 function handleWebsocketConectionClosed(e) {
@@ -58,12 +104,17 @@ function handleWebsocketConectionError(e) {
   console.log("Erro na conexão ", e);
 }
 
-function handleManagerEnterCallButton() {
+async function handleManagerEnterCallButton() {
   managerEnterCallButton.innerHTML = "Entrando na chamada!";
   managerEnterCallButton.classList.remove("ring");
+
   chatSocket.send(JSON.stringify({ event: "MANAGER_ENTERING" }));
+
+  const userId = document.querySelector("[data-js=user-id]").value;
+  await api.post(`/calls/${call.id}/insert_manager/`, { manager_id: userId });
 }
 
-function handleRequestCallButtonClick() {
-  chatSocket.send(JSON.stringify({ event: "MANAGER_NEEDED" }));
+async function handleRequestCallButtonClick() {
+  call = await api.post("/calls/");
+  chatSocket.send(JSON.stringify({ event: "MANAGER_NEEDED", call: call }));
 }

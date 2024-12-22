@@ -7,7 +7,7 @@ class ICallRepository(Protocol):
     def get(self, call_id: int) -> Call | None:
         pass
 
-    def get_all(self) -> List[Call]:
+    def get_all(self, sort: str) -> List[Call]:
         pass
 
     def create(self) -> Call:
@@ -24,8 +24,8 @@ class CallRepository(ICallRepository):
     def get(self, call_id):
         return Call.objects.filter(id=call_id).first()
 
-    def get_all(self):
-        return Call.objects.all()
+    def get_all(self, sort):
+        return Call.objects.all().order_by(sort)
 
     def create(self):
         return Call.objects.create()

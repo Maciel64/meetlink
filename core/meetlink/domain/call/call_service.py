@@ -1,4 +1,4 @@
-from typing import List, Protocol
+from typing import Dict, List, Protocol
 
 from django.utils import timezone
 from meetlink.domain.call.call_exceptions import (
@@ -27,7 +27,7 @@ class ICallService(Protocol):
     def get(self, call_id: int) -> Call | None:
         pass
 
-    def get_all(self) -> List[Call]:
+    def get_all(self, sort: Dict) -> List[Call]:
         pass
 
     def create(self) -> Call:
@@ -67,8 +67,13 @@ class CallService(ICallService):
 
         return call
 
-    def get_all(self):
-        return self.call_repository.get_all()
+    def get_all(self, sort={"created_at": "asc"}):
+        order_by_str = ",".join(
+            f"{'-' if direction == 'desc' else ''}{field}"
+            for field, direction in sort.items()
+        )
+
+        return self.call_repository.get_all(order_by_str)
 
     def create(self):
         return self.call_repository.create()
