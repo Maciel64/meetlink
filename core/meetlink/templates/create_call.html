@@ -1,46 +1,90 @@
-{% extends '_base.html' %}
+<!DOCTYPE html>
+<html>
 
-{% block title %}Dashboard{% endblock %}
+<head>
+    <title>WebRTC Video Call</title>
+</head>
 
-{% load static %}
+<body>
+    <video id="localVideo" autoplay muted></video>
+    <video id="remoteVideo" autoplay></video>
+    <button id="startCallButton">Start Call</button>
+    <button id="endCallButton">End Call</button>
 
-{% block main %}
+    <script>
+        async function main() {
+            const localMediaStream = new MediaStream();
+            const websocket = new WebSocket('ws://localhost:8001/ws/meetings');
 
-<h1 class="mb-5">Entrar em chamada - {{ user.get_role_display }}</h1>
+            const startCallButton = document.getElementById('startCallButton');
+            const localVideo = document.getElementById('localVideo');
+            const remoteVideo = document.getElementById('remoteVideo');
 
-<!-- <a class="p-12 rounded-3 btn btn-primary" data-js="manager-enter-call-button" href="{{ call_uri }}" target="_blank">
-    Entrar na chamada
-</a> -->
+            let peer;
 
-<!-- <div id="meet" style="height: 600px; width: 100%;"></div>
+            startCallButton.addEventListener('click', async () => {
+                peer = createPeer();
+                localMediaStream.getTracks().forEach(track => {
+                    peer.addTrack(track, localMediaStream);
+                });
 
-<script src="https://meet.jit.si/external_api.js"></script>
+                const offer = await peer.createOffer();
+                await peer.setLocalDescription(offer);
 
-<script>
-    const domain = "meet.jit.si";
-    const options = {
-        roomName: "MinhaSalaPersonalizada", // Nome único para a sala
-        width: "100%",
-        height: 600,
-        parentNode: document.getElementById("meet"), // Div onde o Jitsi será renderizado
-        configOverwrite: {
-            startWithAudioMuted: true,
-            startWithVideoMuted: true,
-        },
-        interfaceConfigOverwrite: {
-            SHOW_JITSI_WATERMARK: false, // Remove marca d'água do Jitsi
-            DEFAULT_BACKGROUND: "#f0f0f0", // Cor de fundo padrão
-        },
-    };
-    const api = new JitsiMeetExternalAPI(domain, options);
+                websocket.send(JSON.stringify({ type: 'offer', offer: offer, sender: 'user-1' }));
+            });
 
-    api.addEventListener("participantJoined", (event) => {
-        console.log("Participante entrou:", event);
-    });
+            try {
+                const userMedia = await navigator.mediaDevices.getUserMedia({ audio: true, video: true });
+                localVideo.srcObject = userMedia;
+                userMedia.getTracks().forEach(track => localMediaStream.addTrack(track));
 
-    api.addEventListener("videoConferenceLeft", () => {
-        console.log("A conferência foi encerrada.");
-    });
-</script> -->
+                websocket.onmessage = async function (event) {
+                    const data = JSON.parse(event.data);
 
-{% endblock %}
+                    if (data.type === 'offer') {
+                        peer = createPeer();
+
+                        const remoteDesc = new RTCSessionDescription(data.offer);
+                        await peer.setRemoteDescription(remoteDesc);
+
+                        const answer = await peer.createAnswer();
+                        await peer.setLocalDescription(answer);
+
+                        websocket.send(JSON.stringify({ type: 'answer', answer: answer, sender: 'user-2' }));
+                    } else if (data.type === 'answer') {
+                        if (peer.signalingState === 'have-local-offer') {
+                            const remoteDesc = new RTCSessionDescription(data.answer);
+                            await peer.setRemoteDescription(remoteDesc);
+                        }
+                    } else if (data.type === 'candidate') {
+                        const candidate = new RTCIceCandidate(data.candidate);
+                        await peer.addIceCandidate(candidate);
+                    }
+                };
+            } catch (e) {
+                alert('getUserMedia() error: ' + e.name);
+            }
+
+            function createPeer() {
+                const peer = new RTCPeerConnection(null);
+
+                peer.onicecandidate = event => {
+                    if (event.candidate) {
+                        websocket.send(JSON.stringify({ type: 'candidate', candidate: event.candidate, sender: 'user-1' }));
+                    }
+                };
+
+                peer.ontrack = event => {
+                    remoteVideo.srcObject = event.streams[0];
+                };
+
+                return peer;
+            }
+        }
+
+        main()
+    </script>
+</body>
+
+</html>

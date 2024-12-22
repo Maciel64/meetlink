@@ -8,17 +8,17 @@ from google.oauth2.credentials import Credentials
 from google_auth_oauthlib.flow import InstalledAppFlow
 
 
-class CallOutputDTO:
+class MeetingOutputDTO:
     def __init__(self, call_uri):
         self.call_uri = call_uri
 
 
-class CallAdapter:
+class MeetingAdapter:
     def create_call():
         pass
 
 
-class GoogleMeetAdapter(CallAdapter):
+class GoogleMeetAdapter(MeetingAdapter):
     def __init__(self):
         self.SCOPES = ["https://www.googleapis.com/auth/meetings.space.created"]
 
@@ -48,7 +48,7 @@ class GoogleMeetAdapter(CallAdapter):
             response = client.create_space(request=request)
             print(f"Space created: {response.meeting_uri}")
 
-            data = CallOutputDTO(response.meeting_uri)
+            data = MeetingOutputDTO(response.meeting_uri)
 
             return data
 

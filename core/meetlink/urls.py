@@ -17,5 +17,5 @@ urlpatterns = [
     path("calls/", call_view.calls_index, name="calls_index"),
     path("calls/<int:id>", call_view.CallsEdit.as_view(), name="calls_edit"),
     path("api/", include(router.urls)),
-    # path("create_call/", views.create_call, name="create_call")
+    path("create_call/", call_view.create_call, name="create_call"),
 ]

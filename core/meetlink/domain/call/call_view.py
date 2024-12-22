@@ -2,7 +2,6 @@ from django.contrib.auth.decorators import login_required
 from django.shortcuts import redirect, render
 from django.utils.decorators import method_decorator
 from django.views import View
-from meetlink.domain.call.call_adapter import GoogleMeetAdapter
 from meetlink.domain.call.call_repository import CallRepository
 from meetlink.domain.call.call_serializer import CallSerializer
 from meetlink.domain.call.call_service import CallService
@@ -19,11 +18,7 @@ from rest_framework.viewsets import ViewSet
 
 @login_required
 def create_call(request):
-    call_adapter = GoogleMeetAdapter()
-
-    call = call_adapter.create_call()
-
-    return render(request, "create_call.html", {"call_uri": call.call_uri})
+    return render(request, "create_call.html")
 
 
 @login_required

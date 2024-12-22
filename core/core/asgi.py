@@ -14,6 +14,7 @@ from channels.routing import ProtocolTypeRouter, URLRouter
 from django.core.asgi import get_asgi_application
 from django.urls import re_path
 from meetlink.domain.call.call_consumer import CallConsumer
+from meetlink.domain.meeting.meeting_consumer import MeetingConsumer
 
 os.environ.setdefault("DJANGO_SETTINGS_MODULE", "core.settings")
 
@@ -24,6 +25,7 @@ application = ProtocolTypeRouter(
             URLRouter(
                 [
                     re_path("ws/calls/?$", CallConsumer.as_asgi()),
+                    re_path("ws/meetings/?$", MeetingConsumer.as_asgi()),
                 ]
             )
         ),
