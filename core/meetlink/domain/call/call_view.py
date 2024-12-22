@@ -11,7 +11,8 @@ from meetlink.domain.user.user_repository import UserRepository
 from meetlink.forms import EditCallForm
 from rest_framework import status
 from rest_framework.decorators import action
-from rest_framework.exceptions import APIException
+
+# from rest_framework.exceptions import APIException
 from rest_framework.response import Response
 from rest_framework.viewsets import ViewSet
 
@@ -98,10 +99,7 @@ class CallAPI(ViewSet):
 
     @action(detail=True, methods=["post"])
     def insert_manager(self, request, pk=None):
-        try:
-            serialized_call = CallSerializer(
-                self.call_service.insert_manager(pk, request.data["manager_id"])
-            )
-            return Response(serialized_call.data, status=status.HTTP_200_OK)
-        except APIException as e:
-            return Response(str(e), status=e.status_code)
+        serialized_call = CallSerializer(
+            self.call_service.insert_manager(pk, request.data["manager_id"])
+        )
+        return Response(serialized_call.data, status=status.HTTP_200_OK)

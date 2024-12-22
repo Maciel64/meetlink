@@ -1,10 +1,10 @@
 # Get All Calls
 
-GET http://localhost:8000/api/calls
+GET http://localhost:8000/api/calls/
 
 ### Get All Calls
 
-POST http://localhost:8000/api/calls
+POST http://localhost:8000/api/calls/
 
 ### Get All Calls
 
@@ -12,11 +12,11 @@ POST http://localhost:8000/api/calls/3/insert_manager/
 Content-Type: application/json
 
 {
-    "manager_id": 2
+    "manager_id": 123
 }
 
 ###
 
-POST http://localhost:8000/api/calls/{id}/finish
+POST http://localhost:8000/api/calls/{id}/finish/
 
 ###
