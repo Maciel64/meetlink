@@ -44,6 +44,19 @@ li {
   max-width: 24rem;
 }
 
+.h-100vh {
+    height: 60vh;
+}
+
+.py-12 {
+    padding-top: 3rem;
+    padding-bottom: 3rem;
+}
+
+.pb-12 {
+  padding-bottom: 3rem;
+}
+
 .p-12 {
   padding: 3rem;
 }
@@ -77,6 +90,14 @@ li {
 
 .disabled\:bg-grey:disabled {
     background-color: #C5C5C5;
+}
+
+.text-color-dark-blue {
+    color: #113445;
+}
+
+.text-color-light-grey {
+    color: #B6B6B6;
 }
 
 @keyframes ring {

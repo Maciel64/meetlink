@@ -1,9 +1,28 @@
 {% extends '_base.html' %}
 
+{% load static %}
+
 {% block main %}
 
-<button class="p-12 rounded-3 btn btn-primary" data-js="request-call-button">
-    Solicitar atendente
-</button>
+<div class="d-flex flex-column justify-content-center align-items-center h-100vh">
+    <img class="w-72 pb-12" src="{% static 'img/natal_shopping_logo_white.jpg' %}" alt="Natal shopping logo ciano" />
+
+    <h1 class="text-uppercase fs-1 text-color-dark-blue fw-bold">Precisa de ajuda?</h1>
+
+    <p class="text-uppercase fs-3 pb-12 text-color-light-grey">Selecione a opção para ser atendido por nossa
+        equipe de
+        suporte</p>
+
+    <div class="d-flex gap-4">
+        <button class="p-12 rounded-3 btn btn-primary" data-js="request-call-button">
+            Solicitar atendente
+        </button>
+
+        <button class="p-12 rounded-3 btn btn-primary" data-js="request-call-button">
+            Atendimento em Libras
+        </button>
+    </div>
+</div>
+
 
 {% endblock %}
