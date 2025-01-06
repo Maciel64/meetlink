@@ -1,0 +1,23 @@
+{% extends '_base.html' %}
+
+{% block title %}Chamada {{ call.id }} em progresso{% endblock %}
+
+{% load static %}
+
+{% block main %}
+
+<div>
+    <div data-js="video-container">
+        <video data-js="video-local" autoplay muted class="rounded placeholder"></video>
+        <video data-js="video-remote" autoplay muted class="rounded placeholder"></video>
+    </div>
+
+    {% if SHOULD_VIEW_END_CALL_BUTTON %}
+    <button data-js="video-end-call-button" class="btn btn-secondary">Finalizar chamada</button>
+    <button data-js="video-start-call-button" class="btn btn-primary">Entrar na chamada</button>
+    {% endif %}
+</div>
+
+<script src="{% static 'js/call.js' %}"></script>
+
+{% endblock %}

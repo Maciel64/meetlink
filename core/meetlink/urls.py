@@ -15,6 +15,11 @@ urlpatterns = [
     path("logout/", views.logout_view, name="logout"),
     path("dashboard/", views.dashboard, name="dashboard"),
     path("calls/", call_view.calls_index, name="calls_index"),
+    path(
+        "calls/<int:id>/in_progress/",
+        call_view.call_in_progress,
+        name="call_in_progress",
+    ),
     path("calls/<int:id>", call_view.CallsEdit.as_view(), name="calls_edit"),
     path("api/", include(router.urls)),
     path("create_call/", call_view.create_call, name="create_call"),

@@ -34,6 +34,21 @@ def calls_index(request):
     return render(request, "calls/index.html", {"calls": calls})
 
 
+@login_required
+def call_in_progress(request, id):
+    call_repository = CallRepository()
+    user_repository = UserRepository()
+    subject_repository = SubjectRepository()
+
+    call_service = CallService(call_repository, user_repository, subject_repository)
+
+    call = call_service.get(id)
+
+    return render(
+        request, "calls/in_progress.html", {"call": call, "hide_sidebar": True}
+    )
+
+
 class CallsEdit(View):
     def __init__(self):
         self.call_repository = CallRepository()

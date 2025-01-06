@@ -103,7 +103,7 @@ TEMPLATES = [
                 "django.template.context_processors.request",
                 "django.contrib.auth.context_processors.auth",
                 "django.contrib.messages.context_processors.messages",
-                "meetlink.context_processors.sidebar_context",
+                "meetlink.context_processors.view_context",
             ],
         },
     },
