@@ -1,15 +1,6 @@
-const endCallButtonDOM = document.querySelector(
-  "[data-js=video-end-call-button]"
-);
-const startCallButtonDOM = document.querySelector(
+const videoStartCallButton = document.querySelector(
   "[data-js=video-start-call-button]"
 );
-const localVideo = document.querySelector("[data-js=video-local]");
-const remoteVideo = document.querySelector("[data-js=video-remote]");
-const videoContainerDOM = document.querySelector("[data-js=video-container]");
-
-let localMediaStream = null;
-let remoteMediaStream = null;
 
 const websocket = new WebSocket("ws://localhost:8001/ws/meetings");
 
@@ -19,52 +10,74 @@ const serversConfig = {
       urls: ["stun:stun1.l.google.com:19302", "stun:stun2.l.google.com:19302"],
     },
   ],
-  iceCandidatePoolSize: 10,
 };
 
 let peer = new RTCPeerConnection(serversConfig);
+let localMediaStream = null;
+let remoteMediaStream = new MediaStream();
 
-startCallButtonDOM.addEventListener("click", async function () {
-  localMediaStream = await navigator.mediaDevices.getUserMedia({
-    audio: true,
-    video: true,
+const localVideo = document.querySelector("[data-js=video-local]");
+const remoteVideo = document.querySelector("[data-js=video-remote]");
+
+peer.ontrack = (event) => {
+  event.streams[0].getTracks().forEach((track) => {
+    remoteMediaStream.addTrack(track);
   });
-  remoteMediaStream = new MediaStream();
-  const offerCandidates = [];
+  remoteVideo.srcObject = remoteMediaStream;
+};
+
+peer.onicecandidate = (event) => {
+  if (event.candidate) {
+    websocket.send(
+      JSON.stringify({
+        type: "candidate",
+        candidate: event.candidate,
+      })
+    );
+  }
+};
+
+videoStartCallButton.addEventListener("click", async () => {
+  localMediaStream = await navigator.mediaDevices.getUserMedia({
+    video: true,
+    audio: true,
+  });
 
   localMediaStream.getTracks().forEach((track) => {
     peer.addTrack(track, localMediaStream);
   });
 
-  peer.ontrack = (event) => {
-    event.streams[0].getTracks().forEach((track) => {
-      remoteMediaStream.addTrack(track);
-    });
-  };
-
-  peer.onicecandidate((event) => {
-    event.candidate && offerCandidates.push(event.candidate.toJSON());
-  });
-
   localVideo.srcObject = localMediaStream;
-  remoteVideo.srcObject = remoteMediaStream;
 
-  const offerDescription = await peer.createOffer();
-  await peer.setLocalDescription(offerDescription);
+  const offer = await peer.createOffer();
+  await peer.setLocalDescription(offer);
 
-  const offer = {
-    sdp: offerDescription.sdp,
-    type: offerDescription.type,
-  };
-
-  websocket.send(JSON.stringify(offer));
-
-  websocket.onmessage((event) => {
-    const data = JSON.parse(event).data;
-
-    if (peer.currentRemoteDescription && data?.answer) {
-      const answerDescription = new RTCSessionDescription(data.answer);
-      peer.setRemoteDescription(answerDescription);
-    }
-  });
+  websocket.send(
+    JSON.stringify({
+      type: "offer",
+      offer: peer.localDescription,
+    })
+  );
 });
+
+websocket.onmessage = async (event) => {
+  const data = JSON.parse(event.data);
+
+  if (data.type === "offer") {
+    await peer.setRemoteDescription(new RTCSessionDescription(data.offer));
+
+    const answer = await peer.createAnswer();
+    await peer.setLocalDescription(answer);
+
+    websocket.send(
+      JSON.stringify({
+        type: "answer",
+        answer: peer.localDescription,
+      })
+    );
+  } else if (data.type === "answer") {
+    await peer.setRemoteDescription(new RTCSessionDescription(data.answer));
+  } else if (data.type === "candidate") {
+    await peer.addIceCandidate(new RTCIceCandidate(data.candidate));
+  }
+};
