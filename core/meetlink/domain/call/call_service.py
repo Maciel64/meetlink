@@ -113,6 +113,9 @@ class CallService(ICallService):
         if not call:
             raise CallNotFoundException()
 
+        if call.finished_at:
+            return call
+
         call.finished_at = timezone.now()
         call.save()
 

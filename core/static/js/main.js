@@ -2,6 +2,9 @@
 
 var call = null;
 
+const callId = document.querySelector("[data-js=call-id]")?.value;
+const userRole = document.querySelector("[data-js=user-role]")?.value;
+
 /** DOM manipulation */
 
 const chatSocket = new WebSocket(
@@ -12,6 +15,9 @@ const managerEnterCallButton = document.querySelector(
 );
 const requestCallButtonDOM = document.querySelector(
   "[data-js=request-call-button]"
+);
+const finishCallButtonDOM = document.querySelector(
+  "[data-js=video-finish-call-button]"
 );
 
 const audioPhoneRing = document.querySelector("[data-js=audio-phone-ring]");
@@ -53,6 +59,19 @@ const api = {
     });
     return response.json();
   },
+
+  put: async function (url, data) {
+    const csrftoken = getCookie("csrftoken");
+    const response = await fetch(this.baseUrl + url, {
+      method: "PUT",
+      headers: {
+        "Content-Type": "application/json",
+        "X-CSRFToken": csrftoken,
+      },
+      body: JSON.stringify(data),
+    });
+    return response.json();
+  },
 };
 
 /** Server sent events */
@@ -65,6 +84,7 @@ chatSocket.onerror = handleWebsocketConectionError;
 
 managerEnterCallButton?.addEventListener("click", handleManagerEnterCallButton);
 requestCallButtonDOM?.addEventListener("click", handleRequestCallButtonClick);
+finishCallButtonDOM?.addEventListener("click", handleFinishCallButtonClick);
 
 /** Custom Functions */
 
@@ -81,7 +101,17 @@ const eventHandlers = {
   },
 
   MANAGER_ENTERING: function (data) {
-    console.log("Gerente entrando na chamada");
+    window.location.replace(
+      window.location.origin + `/calls/${call.id}/in_progress`
+    );
+  },
+
+  MANAGER_FINISHED_CALL: function (data) {
+    if (userRole.includes("SUPERADMIN", "MANAGER")) {
+      window.location.replace(window.location.origin + `/calls/${call.id}`);
+    } else if (userRole.includes("TOTEM")) {
+      window.location.replace(window.location.origin + `/totem`);
+    }
   },
 };
 
@@ -111,10 +141,17 @@ async function handleManagerEnterCallButton() {
   chatSocket.send(JSON.stringify({ event: "MANAGER_ENTERING" }));
 
   const userId = document.querySelector("[data-js=user-id]").value;
-  await api.post(`/calls/${call.id}/insert_manager/`, { manager_id: userId });
+  await api.put(`/calls/${call.id}/insert_manager/`, { manager_id: userId });
 }
 
 async function handleRequestCallButtonClick() {
   call = await api.post("/calls/");
   chatSocket.send(JSON.stringify({ event: "MANAGER_NEEDED", call: call }));
+}
+
+async function handleFinishCallButtonClick() {
+  updatedCall = await api.put(`/calls/${callId}/finish/`);
+  call = updatedCall;
+  chatSocket.send(JSON.stringify({ event: "MANAGER_FINISHED_CALL" }));
+  window.location.href = window.location.origin + `/calls/${callId}`;
 }

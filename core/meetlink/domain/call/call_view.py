@@ -107,9 +107,15 @@ class CallAPI(ViewSet):
         serialized_call = CallSerializer(self.call_service.create())
         return Response(serialized_call.data, status=status.HTTP_201_CREATED)
 
-    @action(detail=True, methods=["post"])
+    @action(detail=True, methods=["put"])
     def insert_manager(self, request, pk=None):
         serialized_call = CallSerializer(
             self.call_service.insert_manager(pk, request.data["manager_id"])
         )
+        return Response(serialized_call.data, status=status.HTTP_200_OK)
+
+    @action(detail=True, methods=["put"])
+    def finish(self, request, pk=None):
+        serialized_call = CallSerializer(self.call_service.finish(pk))
+
         return Response(serialized_call.data, status=status.HTTP_200_OK)

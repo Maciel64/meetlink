@@ -12,10 +12,13 @@
         <video data-js="video-remote" autoplay muted class="rounded placeholder"></video>
     </div>
 
-    {% if SHOULD_VIEW_END_CALL_BUTTON %}
-    <button data-js="video-end-call-button" class="btn btn-secondary">Finalizar chamada</button>
+    {% if SHOULD_VIEW_FINISH_CALL_BUTTON %}
+    <button data-js="video-finish-call-button" class="btn btn-secondary">Finalizar chamada</button>
     <button data-js="video-start-call-button" class="btn btn-primary">Entrar na chamada</button>
     {% endif %}
+
+    <input type="hidden" data-js="user-role" value="{{ user.role }}">
+    <input type="hidden" data-js="call-id" value="{{ call.id }}">
 </div>
 
 <script src="{% static 'js/call.js' %}"></script>
