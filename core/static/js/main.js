@@ -7,8 +7,9 @@ const userRole = document.querySelector("[data-js=user-role]")?.value;
 
 /** DOM manipulation */
 
+const protocol = window.location.protocol === "https:" ? "wss://" : "ws://";
 const chatSocket = new WebSocket(
-  "ws://" + window.location.hostname + ":8001" + "/ws/calls"
+  protocol + window.location.hostname + ":8001" + "/ws/calls"
 );
 const managerEnterCallButton = document.querySelector(
   "[data-js=manager-enter-call-button]"
