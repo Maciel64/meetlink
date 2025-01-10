@@ -187,3 +187,7 @@ CHANNEL_LAYERS = {
 }
 
 ASGI_APPLICATION = "core.asgi.application"
+
+CSRF_TRUSTED_ORIGINS = [
+    "https://meetlink.onrender.com",
+]
