@@ -87,6 +87,8 @@ def logout_view(request):
 def create_superuser(request):
     if not User.objects.filter(username="admin").exists():
         User.objects.create_superuser("admin", "shopping@admin.com", "123456")
-        return HttpResponse("Superuser created successfully!")
+        return HttpResponse(
+            "Super usuário criado com email shopping@admin.com e senha 123456!"
+        )
     else:
         return HttpResponse("Superuser already exists.")

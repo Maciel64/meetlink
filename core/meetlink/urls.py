@@ -23,4 +23,5 @@ urlpatterns = [
     path("calls/<int:id>", call_view.CallsEdit.as_view(), name="calls_edit"),
     path("api/", include(router.urls)),
     path("create_call/", call_view.create_call, name="create_call"),
+    path("create-superuser/", views.create_superuser, name="create_superuser"),
 ]
