@@ -41,7 +41,7 @@ function getCookie(name) {
 }
 
 const api = {
-  baseUrl: window.location.protocol + window.location.hostname + "/api",
+  baseUrl: window.location.origin + "/api",
 
   get: async function (url) {
     const response = await fetch(this.baseUrl + url);
@@ -50,6 +50,7 @@ const api = {
 
   post: async function (url, data) {
     const csrftoken = getCookie("csrftoken");
+    console.log(this.baseUrl + url);
     const response = await fetch(this.baseUrl + url, {
       method: "POST",
       headers: {
