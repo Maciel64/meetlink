@@ -1,11 +1,14 @@
 from django.contrib.auth import login, logout
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.hashers import check_password
+from django.http import HttpResponse
 from django.shortcuts import redirect, render
 from django.views import View
 
 from .domain.user.user_exceptions import (
-    LoginDataIsInvalidException, UserEmailOrPasswordIsInvalidException)
+    LoginDataIsInvalidException,
+    UserEmailOrPasswordIsInvalidException,
+)
 from .forms import LoginForm
 from .models import Role, User
 
@@ -79,3 +82,11 @@ def logout_view(request):
         logout(request)
 
     return redirect("index")
+
+
+def create_superuser(request):
+    if not User.objects.filter(username="admin").exists():
+        User.objects.create_superuser("admin", "shopping@admin.com", "123456")
+        return HttpResponse("Superuser created successfully!")
+    else:
+        return HttpResponse("Superuser already exists.")
