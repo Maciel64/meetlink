@@ -15,6 +15,8 @@ RUN pipenv install --system --deploy
 
 COPY . /app/
 
-EXPOSE 8000 8001
+WORKDIR /app/core/
 
-CMD [ "sh", "-c", "python manage.py migrate && python manage.py runserver 0.0.0.0:8000 & daphne -b 0.0.0.0 -p 8001 core.asgi:application" ]
+EXPOSE 8000
+
+CMD [ "daphne", "-p", "8000", "-b", "0.0.0.0", "core.asgi:application" ]
