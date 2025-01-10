@@ -41,7 +41,7 @@ function getCookie(name) {
 }
 
 const api = {
-  baseUrl: "http://localhost:8000/api",
+  baseUrl: window.location.protocol + window.location.hostname + "/api",
 
   get: async function (url) {
     const response = await fetch(this.baseUrl + url);
