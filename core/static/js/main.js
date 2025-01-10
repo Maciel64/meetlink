@@ -50,7 +50,6 @@ const api = {
 
   post: async function (url, data) {
     const csrftoken = getCookie("csrftoken");
-    console.log(this.baseUrl + url);
     const response = await fetch(this.baseUrl + url, {
       method: "POST",
       headers: {
@@ -78,9 +77,16 @@ const api = {
 
 /** Server sent events */
 
+const initialTime = new Date();
+
 chatSocket.onmessage = handleEventIncoming;
 chatSocket.onclose = handleWebsocketConectionClosed;
 chatSocket.onerror = handleWebsocketConectionError;
+chatSocket.onopen = () =>
+  console.log(
+    "Conectado no servidor websockets => Levou " +
+      (new Date() - initialTime + " ms")
+  );
 
 /** Client side events */
 
