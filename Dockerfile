@@ -17,8 +17,6 @@ COPY . /app/
 
 WORKDIR /app/core/
 
-RUN python manage.py migrate
-
 EXPOSE 8000 8001
 
 CMD [ "bash", "-c", "python manage.py migrate && python manage.py runserver 0.0.0.0:8000 & daphne -p 8001 -b 0.0.0.0 core.asgi:application" ]
