@@ -6,6 +6,6 @@ def view_context(request):
 
     return {
         "user": user,
-        "SHOULD_VIEW_TOTEM_REDIRECT": (Role.SUPERADMIN, Role.TOTEM),
-        "SHOULD_VIEW_FINISH_CALL_BUTTON": (Role.SUPERADMIN, Role.MANAGER),
+        "SHOULD_VIEW_TOTEM_REDIRECT": user.role in (Role.SUPERADMIN, Role.TOTEM),
+        "SHOULD_VIEW_FINISH_CALL_BUTTON": user.role in (Role.SUPERADMIN, Role.MANAGER),
     }

@@ -44,6 +44,11 @@ def call_in_progress(request, id):
 
     call = call_service.get(id)
 
+    print(call.finished_at)
+
+    # if call.finished_at:
+    #     return redirect("dashboard")
+
     return render(
         request, "calls/in_progress.html", {"call": call, "hide_sidebar": True}
     )

@@ -16,8 +16,8 @@ let peer = new RTCPeerConnection(serversConfig);
 let localMediaStream = null;
 let remoteMediaStream = new MediaStream();
 
-const localVideo = document.querySelector("[data-js=video-local]");
-const remoteVideo = document.querySelector("[data-js=video-remote]");
+const localVideo = document.querySelector("[data-js=video-client]");
+const remoteVideo = document.querySelector("[data-js=video-manager]");
 
 peer.ontrack = (event) => {
   event.streams[0].getTracks().forEach((track) => {
