@@ -14,10 +14,9 @@
 
 <body class="d-flex w-100 h-100 bg-dark-blue">
     <div class="p-16 w-100">
-        <div data-js="video-container" class="video-container d-grid gap-4 mb-4 max-h-80vh">
-            <video data-js="video-client" autoplay muted class="video-item-large rounded placeholder"></video>
-            <video data-js="video-manager" class="video-item rounded placeholder"></video>
-            <video data-js="video-interpreter" class="video-item rounded placeholder"></video>
+        <div data-js="video-container" class="video-container d-grid gap-4 mb-4 md:max-h-80vh">
+            <video data-js="video-local" autoplay muted class="video-item-large rounded placeholder"></video>
+            <video data-js="video-remote" autoplay muted class="video-item rounded placeholder"></video>
         </div>
 
         {% if SHOULD_VIEW_FINISH_CALL_BUTTON %}
