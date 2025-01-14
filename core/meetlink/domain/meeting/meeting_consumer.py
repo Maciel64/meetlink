@@ -23,6 +23,7 @@ class MeetingConsumer(AsyncWebsocketConsumer):
                     "type": "offer",
                     "offer": data["offer"],
                     "sender": self.channel_name,
+                    "userId": data["userId"],
                 },
             )
         elif type == "answer":
@@ -32,6 +33,7 @@ class MeetingConsumer(AsyncWebsocketConsumer):
                     "type": "answer",
                     "answer": data["answer"],
                     "sender": self.channel_name,
+                    "userId": data["userId"],
                 },
             )
         elif type == "candidate":
@@ -41,6 +43,7 @@ class MeetingConsumer(AsyncWebsocketConsumer):
                     "type": "candidate",
                     "candidate": data["candidate"],
                     "sender": self.channel_name,
+                    "userId": data["userId"],
                 },
             )
 
@@ -52,6 +55,7 @@ class MeetingConsumer(AsyncWebsocketConsumer):
                         "type": "offer",
                         "offer": event["offer"],
                         "sender": event["sender"],
+                        "userId": event["userId"],
                     }
                 )
             )
@@ -64,6 +68,7 @@ class MeetingConsumer(AsyncWebsocketConsumer):
                         "type": "answer",
                         "answer": event["answer"],
                         "sender": event["sender"],
+                        "userId": event["userId"],
                     }
                 )
             )
@@ -76,6 +81,7 @@ class MeetingConsumer(AsyncWebsocketConsumer):
                         "type": "candidate",
                         "candidate": event["candidate"],
                         "sender": event["sender"],
+                        "userId": event["userId"],
                     }
                 )
             )
