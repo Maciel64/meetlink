@@ -16,66 +16,63 @@ class MeetingConsumer(AsyncWebsocketConsumer):
         data = json.loads(text_data)
         type = data.get("type")
 
-        if type == "offer":
-            await self.channel_layer.group_send(
-                self.room_group_name,
+        if type == "offer" or type == "answer":
+            receiver_channel = data.get("channel")
+            channel_name = self.channel_name
+
+            await self.channel_layer.send(
+                receiver_channel,
                 {
-                    "type": "offer",
+                    "type": type,
                     "sdp": data["sdp"],
-                    "sender": self.channel_name,
+                    "channel": channel_name,
+                    "senderId": data["senderId"],
                 },
             )
-        elif type == "answer":
+
+        elif type == "join":
             await self.channel_layer.group_send(
                 self.room_group_name,
                 {
-                    "type": "answer",
-                    "sdp": data["sdp"],
-                    "sender": self.channel_name,
-                },
-            )
-        elif type == "candidate":
-            await self.channel_layer.group_send(
-                self.room_group_name,
-                {
-                    "type": "candidate",
-                    "candidate": data["candidate"],
-                    "sender": self.channel_name,
+                    "type": "join",
+                    "channel": self.channel_name,
+                    "senderId": data["senderId"],
                 },
             )
 
     async def offer(self, event):
-        if self.channel_name != event["sender"]:
+        if self.channel_name != event["channel"]:
             await self.send(
                 text_data=json.dumps(
                     {
                         "type": "offer",
                         "sdp": event["sdp"],
-                        "sender": event["sender"],
+                        "channel": event["channel"],
+                        "senderId": event["senderId"],
                     }
                 )
             )
 
     async def answer(self, event):
-        if self.channel_name != event["sender"]:
+        if self.channel_name != event["channel"]:
             await self.send(
                 text_data=json.dumps(
                     {
                         "type": "answer",
                         "sdp": event["sdp"],
-                        "sender": event["sender"],
+                        "channel": event["channel"],
+                        "senderId": event["senderId"],
                     }
                 )
             )
 
-    async def candidate(self, event):
-        if self.channel_name != event["sender"]:
-            await self.send(
-                text_data=json.dumps(
-                    {
-                        "type": "candidate",
-                        "candidate": event["candidate"],
-                        "sender": event["sender"],
-                    }
-                )
+    async def join(self, event):
+        await self.send(
+            text_data=json.dumps(
+                {
+                    "type": "join",
+                    "channel": event["channel"],
+                    "senderId": event["senderId"],
+                }
             )
+        )
