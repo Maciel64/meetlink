@@ -1,8 +1,12 @@
+const userId = document.querySelector("[data-js=user-id]")?.value;
 const videoStartCallButton = document.querySelector(
   "[data-js=video-start-call-button]"
 );
 
-const websocket = new WebSocket("ws://localhost:8001/ws/meetings");
+const videoContainerDOM = document.querySelector("[data-js=video-container]");
+const localVideoDOM = document.querySelector("[data-js=video-local]");
+
+const websocket = new WebSocket(`ws://localhost:8001/ws/meetings`);
 
 const serversConfig = {
   iceServers: [
@@ -12,19 +16,8 @@ const serversConfig = {
   ],
 };
 
-let peer = new RTCPeerConnection(serversConfig);
-let localMediaStream = null;
-let remoteMediaStream = new MediaStream();
-
-const localVideo = document.querySelector("[data-js=video-local]");
-const remoteVideo = document.querySelector("[data-js=video-remote]");
-
-peer.ontrack = (event) => {
-  event.streams[0].getTracks().forEach((track) => {
-    remoteMediaStream.addTrack(track);
-  });
-  remoteVideo.srcObject = remoteMediaStream;
-};
+const peer = new RTCPeerConnection(serversConfig);
+const remoteStream = new MediaStream();
 
 peer.onicecandidate = (event) => {
   if (event.candidate) {
@@ -37,8 +30,24 @@ peer.onicecandidate = (event) => {
   }
 };
 
-videoStartCallButton.addEventListener("click", async () => {
-  localMediaStream = await navigator.mediaDevices.getUserMedia({
+peer.ontrack = (event) => {
+  const [remoteStream] = event.streams;
+
+  if (!document.querySelector("#remote-video-" + remoteStream.id)) {
+    const remoteVideo = document.createElement("video");
+
+    remoteVideo.muted = false;
+    remoteVideo.autoplay = true;
+    remoteVideo.playsInline = true;
+    remoteVideo.id = "remote-video-" + remoteStream.id;
+    remoteVideo.srcObject = remoteStream;
+
+    videoContainerDOM.appendChild(remoteVideo);
+  }
+};
+
+videoStartCallButton.addEventListener("click", async function () {
+  const localMediaStream = await navigator.mediaDevices.getUserMedia({
     video: true,
     audio: true,
   });
@@ -47,36 +56,28 @@ videoStartCallButton.addEventListener("click", async () => {
     peer.addTrack(track, localMediaStream);
   });
 
-  localVideo.srcObject = localMediaStream;
-
   const offer = await peer.createOffer();
   await peer.setLocalDescription(offer);
 
-  websocket.send(
-    JSON.stringify({
-      type: "offer",
-      offer: peer.localDescription,
-    })
-  );
+  localVideoDOM.srcObject = localMediaStream;
+
+  websocket.send(JSON.stringify(offer));
 });
 
 websocket.onmessage = async (event) => {
   const data = JSON.parse(event.data);
 
   if (data.type === "offer") {
-    await peer.setRemoteDescription(new RTCSessionDescription(data.offer));
+    await peer.setRemoteDescription(new RTCSessionDescription(data));
 
     const answer = await peer.createAnswer();
-    await peer.setLocalDescription(answer);
 
-    websocket.send(
-      JSON.stringify({
-        type: "answer",
-        answer: peer.localDescription,
-      })
-    );
+    await peer.setLocalDescription(new RTCSessionDescription(answer));
+
+    websocket.send(JSON.stringify(answer));
   } else if (data.type === "answer") {
-    await peer.setRemoteDescription(new RTCSessionDescription(data.answer));
+    console.log(data);
+    await peer.setRemoteDescription(new RTCSessionDescription(data));
   } else if (data.type === "candidate") {
     await peer.addIceCandidate(new RTCIceCandidate(data.candidate));
   }

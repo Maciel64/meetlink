@@ -21,9 +21,8 @@ class MeetingConsumer(AsyncWebsocketConsumer):
                 self.room_group_name,
                 {
                     "type": "offer",
-                    "offer": data["offer"],
+                    "sdp": data["sdp"],
                     "sender": self.channel_name,
-                    "userId": data["userId"],
                 },
             )
         elif type == "answer":
@@ -31,9 +30,8 @@ class MeetingConsumer(AsyncWebsocketConsumer):
                 self.room_group_name,
                 {
                     "type": "answer",
-                    "answer": data["answer"],
+                    "sdp": data["sdp"],
                     "sender": self.channel_name,
-                    "userId": data["userId"],
                 },
             )
         elif type == "candidate":
@@ -43,7 +41,6 @@ class MeetingConsumer(AsyncWebsocketConsumer):
                     "type": "candidate",
                     "candidate": data["candidate"],
                     "sender": self.channel_name,
-                    "userId": data["userId"],
                 },
             )
 
@@ -53,9 +50,8 @@ class MeetingConsumer(AsyncWebsocketConsumer):
                 text_data=json.dumps(
                     {
                         "type": "offer",
-                        "offer": event["offer"],
+                        "sdp": event["sdp"],
                         "sender": event["sender"],
-                        "userId": event["userId"],
                     }
                 )
             )
@@ -66,9 +62,8 @@ class MeetingConsumer(AsyncWebsocketConsumer):
                 text_data=json.dumps(
                     {
                         "type": "answer",
-                        "answer": event["answer"],
+                        "sdp": event["sdp"],
                         "sender": event["sender"],
-                        "userId": event["userId"],
                     }
                 )
             )
@@ -81,7 +76,6 @@ class MeetingConsumer(AsyncWebsocketConsumer):
                         "type": "candidate",
                         "candidate": event["candidate"],
                         "sender": event["sender"],
-                        "userId": event["userId"],
                     }
                 )
             )
