@@ -19,6 +19,7 @@ services:
 
     depends_on:
       - database
+      - cache
 
   database:
     image: postgres
@@ -30,6 +31,16 @@ services:
 
     ports:
       - ${DB_PORT}:${DB_PORT}
+
+    networks:
+      - meetlink-network
+
+  cache:
+    image: redis
+    container_name: meetlink_django_cache
+
+    ports:
+      - ${CACHE_PORT}:${CACHE_PORT}
 
     networks:
       - meetlink-network

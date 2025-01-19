@@ -70,6 +70,7 @@ class LoginView(View):
             )
 
         except Exception as e:
+            print(e)
             return render(
                 request, "login.html", {"hide_sidebar": True, "error": e.__str__}
             )

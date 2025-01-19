@@ -17,6 +17,8 @@ isort = "*"
 pre-commit = "*"
 djangorestframework = "*"
 psycopg2-binary = "*"
+channels-redis = "*"
+django-redis = "*"
 
 [dev-packages]
 

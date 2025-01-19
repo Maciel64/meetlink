@@ -115,10 +115,26 @@ AUTHENTICATION_BACKENDS = [
     "django.contrib.auth.backends.ModelBackend",
 ]
 
-SESSION_ENGINE = "django.contrib.sessions.backends.db"
+SESSION_ENGINE = "django.contrib.sessions.backends.cache"
+SESSION_CACHE_ALIAS = "default"
 
 # Database
 # https://docs.djangoproject.com/en/5.1/ref/settings/#databases
+
+print(
+    "ENGINE",
+    config("DB_ENGINE"),
+    "NAME",
+    config("DB_NAME"),
+    "USER",
+    config("DB_USERNAME"),
+    "PASSWORD",
+    config("DB_PASSWORD"),
+    "HOST",
+    config("DB_HOST"),
+    "PORT",
+    config("DB_PORT"),
+)
 
 DATABASES = {
     "default": {
@@ -186,8 +202,29 @@ STATICFILES_DIRS = [
 
 CHANNEL_LAYERS = {
     "default": {
-        "BACKEND": "channels.layers.InMemoryChannelLayer",
+        "BACKEND": config("CHANNELS_CACHE_ENGINE"),
+        "CONFIG": {
+            "hosts": [(config("CACHE_HOST"), config("CACHE_PORT"))],
+            "prefix": "meetlink.channels",
+        },
     },
+}
+
+CACHES = {
+    "default": {
+        "BACKEND": "django_redis.cache.RedisCache",
+        "LOCATION": "redis://{}:{}/1".format(
+            config("CACHE_HOST"), config("CACHE_PORT")
+        ),
+        "OPTIONS": {
+            "CLIENT_CLASS": config("CACHE_ENGINE"),
+            "PREFIX": "meetlink.general",
+            "CONNECTION_POOL_KWARGS": {
+                "max_connections": 100,
+                "retry_on_timeout": True,
+            },
+        },
+    }
 }
 
 ASGI_APPLICATION = "core.asgi.application"
