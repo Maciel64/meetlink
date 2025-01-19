@@ -13,3 +13,27 @@ services:
       - DEBUG=True
       - PYTHONUNBUFFERED=1
       - DJANGO_SETTINGS_MODULE=core.settings
+
+    networks:
+      - meetlink-network
+
+    depends_on:
+      - database
+
+  database:
+    image: postgres
+    container_name: meetlink_django_database
+    environment:
+      - POSTGRES_USER=${DB_USERNAME}
+      - POSTGRES_PASSWORD=${DB_PASSWORD}
+      - POSTGRES_DB=${DB_NAME}
+
+    ports:
+      - ${DB_PORT}:${DB_PORT}
+
+    networks:
+      - meetlink-network
+
+networks:
+  meetlink-network:
+    driver: bridge

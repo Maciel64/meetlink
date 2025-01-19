@@ -16,6 +16,7 @@ black = "*"
 isort = "*"
 pre-commit = "*"
 djangorestframework = "*"
+psycopg2-binary = "*"
 
 [dev-packages]
 
