@@ -234,4 +234,5 @@ CSRF_TRUSTED_ORIGINS = [
     "https://meetlink.onrender.com",
     "https://totemvirtual.com.br",
     "http://totemvirtual.com.br",
+    "10.0.0.11",
 ]
