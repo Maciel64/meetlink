@@ -89,7 +89,7 @@ class CallsEdit(View):
         except Exception as e:
             request.session["error"] = str(e)
 
-        return redirect("calls_edit", id=id)
+        return redirect("dashboard")
 
 
 class CallAPI(ViewSet):

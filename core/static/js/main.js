@@ -17,6 +17,9 @@ const managerEnterCallButton = document.querySelector(
 const requestCallButtonDOM = document.querySelector(
   "[data-js=request-call-button]"
 );
+const requestCallWithInterpreterButtonDOM = document.querySelector(
+  "[data-js=request-interpreter-call-button]"
+);
 const finishCallButtonDOM = document.querySelector(
   "[data-js=video-finish-call-button]"
 );
@@ -93,16 +96,47 @@ chatSocket.onopen = () =>
 managerEnterCallButton?.addEventListener("click", handleManagerEnterCallButton);
 requestCallButtonDOM?.addEventListener("click", handleRequestCallButtonClick);
 finishCallButtonDOM?.addEventListener("click", handleFinishCallButtonClick);
+requestCallWithInterpreterButtonDOM?.addEventListener(
+  "click",
+  handleRequestCallWithInterpreter
+);
 
 /** Custom Functions */
 
 const eventHandlers = {
   MANAGER_NEEDED: async function (data) {
-    if (managerEnterCallButton) {
+    if (
+      managerEnterCallButton &&
+      ["SUPERADMIN", "MANAGER"].includes(userRole)
+    ) {
       managerEnterCallButton.disabled = false;
       managerEnterCallButton.innerHTML = "Gerente sendo solicitado!";
       managerEnterCallButton.classList.add("ring");
       audioPhoneRing.play();
+
+      call = data.call;
+    }
+  },
+
+  MANAGER_AND_INTERPRETER_NEEDED: function (data) {
+    if (
+      managerEnterCallButton &&
+      ["SUPERADMIN", "MANAGER", "INTERPRETER"].includes(userRole)
+    ) {
+      console.log(data);
+      managerEnterCallButton.disabled = false;
+      managerEnterCallButton.classList.add("ring");
+      audioPhoneRing.play();
+
+      if (userRole === "MANAGER") {
+        managerEnterCallButton.innerHTML = "Gerente sendo solicitado";
+      }
+
+      if (userRole === "INTERPRETER") {
+        managerEnterCallButton.innerHTML = "Intérprete sendo solicitado";
+      }
+
+      console.log(call);
 
       call = data.call;
     }
@@ -149,12 +183,42 @@ async function handleManagerEnterCallButton() {
   chatSocket.send(JSON.stringify({ event: "MANAGER_ENTERING" }));
 
   const userId = document.querySelector("[data-js=user-id]").value;
-  await api.put(`/calls/${call.id}/insert_manager/`, { manager_id: userId });
+  await api.put(`/calls/${call.id}/insert_interpreter/`, {
+    interpreter_id: userId,
+  });
 }
 
 async function handleRequestCallButtonClick() {
+  requestCallButtonDOM.disabled = true;
+  requestCallWithInterpreterButtonDOM.disabled = true;
+  requestCallButtonDOM.innerHTML = "Chamando atendente";
+
   call = await api.post("/calls/");
   chatSocket.send(JSON.stringify({ event: "MANAGER_NEEDED", call: call }));
+
+  setTimeout(function () {
+    requestCallButtonDOM.disabled = false;
+    requestCallWithInterpreterButtonDOM.disabled = false;
+    requestCallButtonDOM.innerHTML = "Solicitar atendente";
+  }, 10000);
+}
+
+async function handleRequestCallWithInterpreter() {
+  requestCallButtonDOM.disabled = true;
+  requestCallWithInterpreterButtonDOM.disabled = true;
+  requestCallWithInterpreterButtonDOM.innerHTML =
+    "Chamando atendimento em libras";
+
+  call = await api.post("/calls/");
+  chatSocket.send(
+    JSON.stringify({ event: "MANAGER_AND_INTERPRETER_NEEDED", call: call })
+  );
+
+  setTimeout(function () {
+    requestCallButtonDOM.disabled = false;
+    requestCallWithInterpreterButtonDOM.disabled = false;
+    requestCallWithInterpreterButtonDOM.innerHTML = "Atendimento em libras";
+  }, 10000);
 }
 
 async function handleFinishCallButtonClick() {
