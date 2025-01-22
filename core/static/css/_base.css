@@ -17,7 +17,7 @@ video {
 }
 
 .main {
-  padding: 8rem;
+  padding: 2rem;
   width: 100%;
 }
 
@@ -48,6 +48,10 @@ video {
 
 .w-96 {
   max-width: 24rem;
+}
+
+.w-172 {
+  max-width: 48rem;
 }
 
 .h-100vh {
@@ -142,6 +146,10 @@ video {
     .md\:max-h-80vh {
         max-height: 80vh;
     }
+
+    .main {
+        padding: 8rem;
+      }
 }
 
 @keyframes ring {

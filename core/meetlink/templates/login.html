@@ -3,30 +3,31 @@
 {% load static %}
 
 {% block main %}
+<div class="d-flex flex-column align-items-center gap-4">
+    <img class="w-48" src="{% static 'img/natal_shopping_logo_white.jpg' %}" alt="Natal shopping logo ciano">
 
-<img class="w-48" src="{% static 'img/natal_shopping_logo_white.jpg' %}" alt="Natal shopping logo ciano">
+    <h1>Faça login</h1>
 
-<h1>Faça login</h1>
+    <form class="login__form d-flex flex-column gap-4 w-100" method="POST">
+        {% csrf_token %}
+        <div>
+            <label for="email" class="form-label">Email</label>
+            <input type="email" class="form-control" id="email" aria-describedby="emailHelp" name="email">
+        </div>
 
-{% if error %}
-<div>
-  {{ error }}
+        <div>
+            <label for="password" class="form-label">Senha</label>
+            <input type="password" class="form-control" id="password" name="password">
+        </div>
+
+        {% if error %}
+        <div class="p-3 mb-3 text-danger-emphasis bg-danger-subtle border border-danger-subtle rounded-3">
+            {{ error }}
+        </div>
+        {% endif %}
+
+        <button type="submit" class="btn btn-primary">Confirmar</button>
+    </form>
 </div>
-{% endif %}
-
-<form class="login__form d-flex flex-column gap-4" method="POST">
-  {% csrf_token %}
-  <div>
-    <label for="email" class="form-label">Email</label>
-    <input type="email" class="form-control" id="email" aria-describedby="emailHelp" name="email">
-  </div>
-
-  <div>
-    <label for="password" class="form-label">Senha</label>
-    <input type="password" class="form-control" id="password" name="password">
-  </div>
-
-  <button type="submit" class="btn btn-primary">Confirmar</button>
-</form>
 
 {% endblock %}
