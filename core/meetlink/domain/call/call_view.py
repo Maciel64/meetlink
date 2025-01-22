@@ -15,6 +15,8 @@ from rest_framework.decorators import action
 from rest_framework.response import Response
 from rest_framework.viewsets import ViewSet
 
+from core.meetlink.models import Role
+
 
 @login_required
 def create_call(request):
@@ -44,10 +46,12 @@ def call_in_progress(request, id):
 
     call = call_service.get(id)
 
-    print(call.finished_at)
+    if call.finished_at:
+        if request.user.role == Role.TOTEM:
+            return redirect("totem")
 
-    # if call.finished_at:
-    #     return redirect("dashboard")
+        if request.user.role in (Role.MANAGER, Role.INTERPRETER):
+            return redirect("dashboard")
 
     return render(
         request, "calls/in_progress.html", {"call": call, "hide_sidebar": True}

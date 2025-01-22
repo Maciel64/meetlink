@@ -121,21 +121,6 @@ SESSION_CACHE_ALIAS = "default"
 # Database
 # https://docs.djangoproject.com/en/5.1/ref/settings/#databases
 
-print(
-    "ENGINE",
-    config("DB_ENGINE"),
-    "NAME",
-    config("DB_NAME"),
-    "USER",
-    config("DB_USERNAME"),
-    "PASSWORD",
-    config("DB_PASSWORD"),
-    "HOST",
-    config("DB_HOST"),
-    "PORT",
-    config("DB_PORT"),
-)
-
 DATABASES = {
     "default": {
         "ENGINE": config("DB_ENGINE"),

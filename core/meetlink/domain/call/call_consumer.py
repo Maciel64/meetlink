@@ -33,7 +33,6 @@ class CallConsumer(AsyncWebsocketConsumer):
                 )
 
         except Exception as e:
-            print(data)
             print("Erro ao decodificar JSON: ", e)
 
     async def manager_needed(self, event):
