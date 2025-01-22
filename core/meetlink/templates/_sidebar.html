@@ -7,20 +7,31 @@
                     alt="Natal shopping logo ciano" />
             </a>
         </li>
-        <li class="rounded-2 bg-primary-color d-flex">
-            <a class="w-100 h-100 p-3 text-white" href="/dashboard"> Gestão </a>
+        <li class="d-flex">
+            <a class="rounded-2 w-100 h-100 p-3 text-primary-color hover:text-white hover:bg-primary-color {% if request.path == '/dashboard/' %}text-white bg-primary-color{% endif %}"
+                href="/dashboard">
+                Gestão
+            </a>
         </li>
-        <li class="rounded-2 d-flex hover:bg-primary-color">
-            <a class="w-100 h-100 p-3 text-primary-color hover:text-white" href="/calls">Histórico de
-                chamadas</a>
+        <li class="d-flex">
+            <a class="rounded-2 w-100 h-100 p-3 text-primary-color hover:text-white hover:bg-primary-color {% if request.path == '/calls/' %}text-white bg-primary-color{% endif %}"
+                href="/calls">
+                Histórico de chamadas
+            </a>
         </li>
         {% if SHOULD_VIEW_TOTEM_REDIRECT %}
-        <li class="rounded-2 d-flex hover:bg-primary-color">
-            <a class="w-100 h-100 p-3 text-primary-color hover:text-white" href="/totem">Tela do totem</a>
+        <li class="d-flex">
+            <a class="rounded-2 w-100 h-100 p-3 text-primary-color hover:text-white hover:bg-primary-color {% if request.path == '/totem/' %}text-white bg-primary-color{% endif %}"
+                href="/totem">
+                Tela do totem
+            </a>
         </li>
         {% endif %}
-        <li class="rounded-2 d-flex mt-auto hover:bg-primary-color">
-            <a class="w-100 h-100 p-3 text-primary-color hover:text-white" href="/logout">Sair</a>
+        <li class="d-flex mt-auto">
+            <a class="rounded-2 w-100 h-100 p-3 text-primary-color hover:text-white hover:bg-primary-color {% if request.path == '/logout' %}text-white bg-primary-color{% endif %}"
+                href="/logout">
+                Sair
+            </a>
         </li>
     </ul>
 </aside>

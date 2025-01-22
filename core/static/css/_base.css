@@ -84,11 +84,6 @@ video {
     background-color: var(--primary-color);
 }
 
-.hover\:bg-primary-color:hover .hover\:text-white {
-    transition: color 100ms ease;
-    color: white;
-}
-
 .text-primary-color {
     color: var(--primary-color);
 }
@@ -99,7 +94,7 @@ video {
 
 .hover\:text-white:hover {
     transition: color 100ms ease;
-    color: var(--primary-color);
+    color: white;
 }
 
 .disabled\:bg-grey:disabled {
