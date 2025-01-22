@@ -38,9 +38,6 @@ class User(AbstractUser):
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
 
-    def has_dashboard_access(self):
-        return self.role == Role.SUPERADMIN
-
 
 class Subject(models.Model):
     name = models.CharField(max_length=100, verbose_name="Nome")
