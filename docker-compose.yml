@@ -35,6 +35,9 @@ services:
     ports:
       - ${DB_PORT}:5432
 
+    volumes:
+      - database_volume:/var/lib/postgresql/data
+
     networks:
       - meetlink-network
 
@@ -89,6 +92,7 @@ services:
 
 volumes:
   static_volume:
+  database_volume:
 
 networks:
   meetlink-network:
