@@ -4,6 +4,7 @@ var call = null;
 
 const callId = document.querySelector("[data-js=call-id]")?.value;
 const userRole = document.querySelector("[data-js=user-role]")?.value;
+const callTimeoutTime = 60000;
 
 /** DOM manipulation */
 
@@ -11,7 +12,7 @@ const protocol = window.location.protocol === "https:" ? "wss://" : "ws://";
 const chatSocket = new WebSocket(
   protocol + window.location.hostname + ":8001" + "/ws/calls"
 );
-const managerEnterCallButton = document.querySelector(
+const attendantEnterCallButton = document.querySelector(
   "[data-js=manager-enter-call-button]"
 );
 const requestCallButtonDOM = document.querySelector(
@@ -93,7 +94,10 @@ chatSocket.onopen = () =>
 
 /** Client side events */
 
-managerEnterCallButton?.addEventListener("click", handleManagerEnterCallButton);
+attendantEnterCallButton?.addEventListener(
+  "click",
+  handleAttendantEnterCallButton
+);
 requestCallButtonDOM?.addEventListener("click", handleRequestCallButtonClick);
 finishCallButtonDOM?.addEventListener("click", handleFinishCallButtonClick);
 requestCallWithInterpreterButtonDOM?.addEventListener(
@@ -103,55 +107,84 @@ requestCallWithInterpreterButtonDOM?.addEventListener(
 
 /** Custom Functions */
 
+function userIs(userRole, roles) {
+  return roles.includes(userRole);
+}
+
 const eventHandlers = {
   MANAGER_NEEDED: async function (data) {
     if (
-      managerEnterCallButton &&
-      ["SUPERADMIN", "MANAGER"].includes(userRole)
+      attendantEnterCallButton &&
+      userIs(userRole, ["SUPERADMIN", "MANAGER"])
     ) {
-      managerEnterCallButton.disabled = false;
-      managerEnterCallButton.innerHTML = "Gerente sendo solicitado!";
-      managerEnterCallButton.classList.add("ring");
+      attendantEnterCallButton.disabled = false;
+      attendantEnterCallButton.innerHTML = "Gerente sendo solicitado!";
+      attendantEnterCallButton.classList.add("ring");
+      attendantEnterCallButton.classList.add("btn-warning");
+      attendantEnterCallButton.classList.add("text-white");
+      attendantEnterCallButton.classList.remove("btn-primary");
       audioPhoneRing.play();
 
       call = data.call;
+
+      setTimeout(function () {
+        attendantEnterCallButton.disabled = true;
+        attendantEnterCallButton.innerHTML = "Chamada perdida...";
+        attendantEnterCallButton.classList.add("btn-primary");
+        attendantEnterCallButton.classList.remove("ring");
+        attendantEnterCallButton.classList.remove("text-white");
+        attendantEnterCallButton.classList.remove("btn-warning");
+      }, callTimeoutTime);
     }
   },
 
   MANAGER_AND_INTERPRETER_NEEDED: function (data) {
     if (
-      managerEnterCallButton &&
-      ["SUPERADMIN", "MANAGER", "INTERPRETER"].includes(userRole)
+      attendantEnterCallButton &&
+      userIs(userRole, ["SUPERADMIN", "MANAGER", "INTERPRETER"])
     ) {
-      console.log(data);
-      managerEnterCallButton.disabled = false;
-      managerEnterCallButton.classList.add("ring");
+      attendantEnterCallButton.disabled = false;
+      attendantEnterCallButton.classList.add("ring");
       audioPhoneRing.play();
 
       if (userRole === "MANAGER") {
-        managerEnterCallButton.innerHTML = "Gerente sendo solicitado";
+        attendantEnterCallButton.innerHTML = "Gerente sendo solicitado";
       }
 
       if (userRole === "INTERPRETER") {
-        managerEnterCallButton.innerHTML = "Intérprete sendo solicitado";
+        attendantEnterCallButton.innerHTML = "Intérprete sendo solicitado";
       }
 
-      console.log(call);
+      setTimeout(function () {
+        attendantEnterCallButton.disabled = true;
+        attendantEnterCallButton.innerHTML = "Chamada perdida...";
+        attendantEnterCallButton.classList.remove("ring");
+      }, callTimeoutTime);
 
       call = data.call;
     }
   },
 
   MANAGER_ENTERING: function (data) {
-    window.location.replace(
-      window.location.origin + `/calls/${call.id}/in_progress`
-    );
+    if (userIs(userRole, ["MANAGER", "SUPERADMIN", "TOTEM"])) {
+      return window.location.replace(
+        window.location.origin + `/calls/${call.id}/in_progress`
+      );
+    }
+  },
+
+  INTERPRETER_ENTERING: function (data) {
+    if (userIs(userRole, ["INTERPRETER"])) {
+      return window.location.replace(
+        window.location.origin + `/calls/${call.id}/in_progress`
+      );
+    }
   },
 
   MANAGER_FINISHED_CALL: function (data) {
-    if (userRole.includes("SUPERADMIN", "MANAGER")) {
+    if (userIs(userRole, ["SUPERADMIN", "MANAGER"])) {
       window.location.replace(window.location.origin + `/calls/${call.id}`);
-    } else if (userRole.includes("TOTEM")) {
+    } else if (userIs(userRole, ["TOTEM"])) {
       window.location.replace(window.location.origin + `/totem`);
     }
   },
@@ -176,16 +209,25 @@ function handleWebsocketConectionError(e) {
   console.log("Erro na conexão ", e);
 }
 
-async function handleManagerEnterCallButton() {
-  managerEnterCallButton.innerHTML = "Entrando na chamada!";
-  managerEnterCallButton.classList.remove("ring");
-
-  chatSocket.send(JSON.stringify({ event: "MANAGER_ENTERING" }));
-
+async function handleAttendantEnterCallButton() {
+  attendantEnterCallButton.innerHTML = "Entrando na chamada!";
+  attendantEnterCallButton.classList.remove("ring");
   const userId = document.querySelector("[data-js=user-id]").value;
-  await api.put(`/calls/${call.id}/insert_interpreter/`, {
-    interpreter_id: userId,
-  });
+
+  if (userIs(userRole, ["MANAGER", "SUPERADMIN"])) {
+    console.log("Entrou aqui");
+    chatSocket.send(JSON.stringify({ event: "MANAGER_ENTERING" }));
+    await api.put(`/calls/${call.id}/insert_manager/`, {
+      manager_id: userId,
+    });
+  }
+
+  if (userIs(userRole, ["INTERPRETER"])) {
+    chatSocket.send(JSON.stringify({ event: "INTERPRETER_ENTERING" }));
+    await api.put(`/calls/${call.id}/insert_interpreter/`, {
+      interpreter_id: userId,
+    });
+  }
 }
 
 async function handleRequestCallButtonClick() {
@@ -200,7 +242,7 @@ async function handleRequestCallButtonClick() {
     requestCallButtonDOM.disabled = false;
     requestCallWithInterpreterButtonDOM.disabled = false;
     requestCallButtonDOM.innerHTML = "Solicitar atendente";
-  }, 10000);
+  }, callTimeoutTime);
 }
 
 async function handleRequestCallWithInterpreter() {
@@ -218,7 +260,7 @@ async function handleRequestCallWithInterpreter() {
     requestCallButtonDOM.disabled = false;
     requestCallWithInterpreterButtonDOM.disabled = false;
     requestCallWithInterpreterButtonDOM.innerHTML = "Atendimento em libras";
-  }, 10000);
+  }, callTimeoutTime);
 }
 
 async function handleFinishCallButtonClick() {

@@ -55,10 +55,18 @@ class Call(models.Model):
     responsible = models.ForeignKey(
         "User",
         on_delete=models.CASCADE,
-        related_name="calls",
+        related_name="responsible_calls",
         blank=True,
         null=True,
         verbose_name="Responsável",
+    )
+    interpreter = models.ForeignKey(
+        "User",
+        on_delete=models.CASCADE,
+        related_name="interpreter_calls",
+        blank=True,
+        null=True,
+        verbose_name="Interprete",
     )
     subject = models.ForeignKey(
         "Subject",

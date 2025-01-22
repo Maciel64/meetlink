@@ -9,6 +9,8 @@ from meetlink.domain.call.call_exceptions import (
 from meetlink.domain.call.call_repository import ICallRepository
 from meetlink.domain.subject.subject_repository import ISubjectRepository
 from meetlink.domain.user.user_exceptions import (
+    InterpreterIdNotPassedException,
+    InterpreterNotFoundException,
     InvalidUserRoleException,
     ManagerIdNotPassedException,
     ManagerNotFoundException,
@@ -35,6 +37,11 @@ class ICallService(Protocol):
 
     def insert_manager(
         self, call_id: int | None, manager_id: int | None
+    ) -> Call | None:
+        pass
+
+    def insert_interpreter(
+        self, call_id: int | None, interpreter_id: int | None
     ) -> Call | None:
         pass
 
@@ -100,6 +107,32 @@ class CallService(ICallService):
 
         call.manager_entered_at = timezone.now()
         call.responsible = manager
+        call.save()
+
+        return call
+
+    def insert_interpreter(self, call_id, interpreter_id):
+        if not interpreter_id:
+            raise InterpreterIdNotPassedException()
+
+        if not call_id:
+            raise CallIdNotPassedException()
+
+        interpreter = self.user_repository.get(interpreter_id)
+
+        if not interpreter:
+            raise InterpreterNotFoundException()
+
+        if interpreter.role not in (Role.SUPERADMIN, Role.interpreter):
+            raise InvalidUserRoleException(interpreter.first_name, interpreter.role)
+
+        call = self.call_repository.get(call_id)
+
+        if not call:
+            raise CallNotFoundException()
+
+        call.interpreter_entered_at = timezone.now()
+        call.interpreter = interpreter
         call.save()
 
         return call

@@ -120,6 +120,13 @@ class CallAPI(ViewSet):
         return Response(serialized_call.data, status=status.HTTP_200_OK)
 
     @action(detail=True, methods=["put"])
+    def insert_interpreter(self, request, pk=None):
+        serialized_call = CallSerializer(
+            self.call_service.insert_interpreter(pk, request.data["interpreter_id"])
+        )
+        return Response(serialized_call.data, status=status.HTTP_200_OK)
+
+    @action(detail=True, methods=["put"])
     def finish(self, request, pk=None):
         serialized_call = CallSerializer(self.call_service.finish(pk))
 

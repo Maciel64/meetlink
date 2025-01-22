@@ -30,3 +30,13 @@ class ManagerIdNotPassedException(ValidationError):
 class ManagerNotFoundException(NotFound):
     def __init__(self):
         super().__init__("O gestor solicitado não foi encontrado")
+
+
+class InterpreterIdNotPassedException(ValidationError):
+    def __init__(self):
+        super().__init__("O Id do intérprete não foi passado")
+
+
+class InterpreterNotFoundException(NotFound):
+    def __init__(self):
+        super().__init__("O intérprete solicitado não foi encontrado")
