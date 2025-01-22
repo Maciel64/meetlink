@@ -117,23 +117,15 @@ const eventHandlers = {
       attendantEnterCallButton &&
       userIs(userRole, ["SUPERADMIN", "MANAGER"])
     ) {
-      attendantEnterCallButton.disabled = false;
       attendantEnterCallButton.innerHTML = "Gerente sendo solicitado!";
-      attendantEnterCallButton.classList.add("ring");
-      attendantEnterCallButton.classList.add("btn-warning");
-      attendantEnterCallButton.classList.add("text-white");
-      attendantEnterCallButton.classList.remove("btn-primary");
       audioPhoneRing.play();
+      enableAttendantButton();
 
       call = data.call;
 
       setTimeout(function () {
-        attendantEnterCallButton.disabled = true;
+        disableAttendantButton();
         attendantEnterCallButton.innerHTML = "Chamada perdida...";
-        attendantEnterCallButton.classList.add("btn-primary");
-        attendantEnterCallButton.classList.remove("ring");
-        attendantEnterCallButton.classList.remove("text-white");
-        attendantEnterCallButton.classList.remove("btn-warning");
       }, callTimeoutTime);
     }
   },
@@ -143,8 +135,7 @@ const eventHandlers = {
       attendantEnterCallButton &&
       userIs(userRole, ["SUPERADMIN", "MANAGER", "INTERPRETER"])
     ) {
-      attendantEnterCallButton.disabled = false;
-      attendantEnterCallButton.classList.add("ring");
+      enableAttendantButton();
       audioPhoneRing.play();
 
       if (userRole === "MANAGER") {
@@ -156,9 +147,8 @@ const eventHandlers = {
       }
 
       setTimeout(function () {
-        attendantEnterCallButton.disabled = true;
+        disableAttendantButton();
         attendantEnterCallButton.innerHTML = "Chamada perdida...";
-        attendantEnterCallButton.classList.remove("ring");
       }, callTimeoutTime);
 
       call = data.call;
@@ -268,4 +258,21 @@ async function handleFinishCallButtonClick() {
   call = updatedCall;
   chatSocket.send(JSON.stringify({ event: "MANAGER_FINISHED_CALL" }));
   window.location.href = window.location.origin + `/calls/${callId}`;
+}
+
+async function enableAttendantButton() {
+  attendantEnterCallButton.disabled = false;
+  attendantEnterCallButton.classList.add("ring");
+  attendantEnterCallButton.classList.add("btn-warning");
+  attendantEnterCallButton.classList.add("text-white");
+  attendantEnterCallButton.classList.remove("btn-primary");
+}
+
+async function disableAttendantButton() {
+  attendantEnterCallButton.disabled = true;
+  attendantEnterCallButton.classList.add("btn-primary");
+  attendantEnterCallButton.classList.remove("ring");
+  attendantEnterCallButton.classList.remove("text-white");
+  attendantEnterCallButton.classList.remove("btn-warning");
+  attendantEnterCallButton.classList.remove("ring");
 }

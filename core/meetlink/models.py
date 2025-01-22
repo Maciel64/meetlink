@@ -93,7 +93,10 @@ class Call(models.Model):
     )
 
     def __str__(self):
-        return f"Call by {self.responsible.username} on {self.created_at}"
+        return (
+            f"Call by {self.responsible.username if self.responsible else None}"
+            f" at {self.created_at}"
+        )
 
     class Meta:
         verbose_name = "Chamada"

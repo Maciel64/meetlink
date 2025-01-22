@@ -54,6 +54,13 @@ class CallConsumer(AsyncWebsocketConsumer):
             )
         )
 
+    async def interpreter_entering(self, event):
+        await self.send(
+            text_data=json.dumps(
+                {"event": event["event"], "message": "Intérprete entrando!"}
+            )
+        )
+
     async def manager_and_interpreter_needed(self, event):
         await self.send(
             text_data=json.dumps(
