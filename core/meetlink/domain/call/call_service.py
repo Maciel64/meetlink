@@ -32,6 +32,9 @@ class ICallService(Protocol):
     def get_all(self, sort: Dict) -> List[Call]:
         pass
 
+    def filter_by_user(self, user_id: int, user_role: Role, sort: Dict) -> List[Call]:
+        pass
+
     def create(self) -> Call:
         pass
 
@@ -82,6 +85,25 @@ class CallService(ICallService):
 
         return self.call_repository.get_all(order_by_str)
 
+    def filter_by_user(self, user_id, user_role, sort={"created_at": "asc"}):
+        order_by_str = ",".join(
+            f"{'-' if direction == 'desc' else ''}{field}"
+            for field, direction in sort.items()
+        )
+
+        calls = []
+
+        if user_role == Role.INTERPRETER:
+            calls = self.call_repository.filter_by_interpreter(user_id, order_by_str)
+
+        if user_role == Role.MANAGER:
+            calls = self.call_repository.filter_by_responsible(user_id, order_by_str)
+
+        if user_role == Role.SUPERADMIN:
+            calls = self.call_repository.get_all(order_by_str)
+
+        return calls
+
     def create(self):
         return self.call_repository.create()
 
@@ -123,7 +145,7 @@ class CallService(ICallService):
         if not interpreter:
             raise InterpreterNotFoundException()
 
-        if interpreter.role not in (Role.SUPERADMIN, Role.interpreter):
+        if interpreter.role not in (Role.SUPERADMIN, Role.INTERPRETER):
             raise InvalidUserRoleException(interpreter.first_name, interpreter.role)
 
         call = self.call_repository.get(call_id)

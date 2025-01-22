@@ -257,7 +257,13 @@ async function handleFinishCallButtonClick() {
   updatedCall = await api.put(`/calls/${callId}/finish/`);
   call = updatedCall;
   chatSocket.send(JSON.stringify({ event: "MANAGER_FINISHED_CALL" }));
-  window.location.href = window.location.origin + `/calls/${callId}`;
+  if (userIs(userRole, ["MANAGER", "SUPERADMIN"])) {
+    window.location.href = window.location.origin + `/calls/${callId}`;
+  } else if (userIs(userRole, ["TOTEM"])) {
+    window.location.href = window.location.origin + `/totem`;
+  } else if (userIs(userRole, ["INTERPRETER"])) {
+    window.location.href = window.location.origin + `/dashboard`;
+  }
 }
 
 async function enableAttendantButton() {

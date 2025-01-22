@@ -24,7 +24,7 @@ class UserAdmin(admin.ModelAdmin):
 
 @admin.register(Call)
 class CallAdmin(admin.ModelAdmin):
-    list_display = ("responsible", "subject", "created_at")
+    list_display = ("responsible", "interpreter", "subject", "created_at")
     search_fields = ("responsible__username", "subject__name", "description")
     list_filter = ("created_at",)
 

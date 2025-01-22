@@ -8,14 +8,13 @@ from meetlink.domain.call.call_service import CallService
 from meetlink.domain.subject.subject_repository import SubjectRepository
 from meetlink.domain.user.user_repository import UserRepository
 from meetlink.forms import EditCallForm
+from meetlink.models import Role
 from rest_framework import status
 from rest_framework.decorators import action
 
 # from rest_framework.exceptions import APIException
 from rest_framework.response import Response
 from rest_framework.viewsets import ViewSet
-
-from core.meetlink.models import Role
 
 
 @login_required
@@ -28,10 +27,11 @@ def calls_index(request):
     call_repository = CallRepository()
     user_repository = UserRepository()
     subject_repository = SubjectRepository()
+    user = request.user
 
     call_service = CallService(call_repository, user_repository, subject_repository)
 
-    calls = call_service.get_all({"created_at": "desc"})
+    calls = call_service.filter_by_user(user.id, user.role, {"created_at": "desc"})
 
     return render(request, "calls/index.html", {"calls": calls})
 
@@ -112,7 +112,6 @@ class CallAPI(ViewSet):
         return Response(serialized_calls.data, status=status.HTTP_200_OK)
 
     def create(self, request):
-        print(request.data)
         serialized_call = CallSerializer(self.call_service.create())
         return Response(serialized_call.data, status=status.HTTP_201_CREATED)
 

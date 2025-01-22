@@ -10,6 +10,12 @@ class ICallRepository(Protocol):
     def get_all(self, sort: str) -> List[Call]:
         pass
 
+    def filter_by_interpreter(self, interpreter_id, sort: str) -> List[Call]:
+        pass
+
+    def filter_by_responsible(self, responsible_id, sort: str) -> List[Call]:
+        pass
+
     def create(self) -> Call:
         pass
 
@@ -26,6 +32,12 @@ class CallRepository(ICallRepository):
 
     def get_all(self, sort):
         return Call.objects.all().order_by(sort)
+
+    def filter_by_interpreter(self, interpreter_id, sort):
+        return Call.objects.filter(interpreter_id=interpreter_id).order_by(sort)
+
+    def filter_by_responsible(self, responsible_id, sort):
+        return Call.objects.filter(responsible_id=responsible_id).order_by(sort)
 
     def create(self):
         return Call.objects.create()
