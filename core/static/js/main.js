@@ -7,11 +7,13 @@ const userRole = document.querySelector("[data-js=user-role]")?.value;
 const callTimeoutTime = 60000;
 
 /** DOM manipulation */
-
-const protocol = window.location.protocol === "https:" ? "wss://" : "ws://";
+const { protocol, port, hostname } = window.location;
+const wssProtocol = protocol === "https:" ? "wss://" : "ws://";
+const wssPort = wssProtocol === "ws://" ? 8001 : port;
 const chatSocket = new WebSocket(
-  protocol + window.location.hostname + ":8001" + "/ws/calls"
+  `${wssProtocol}${hostname}:${wssPort}/ws/calls`
 );
+
 const attendantEnterCallButton = document.querySelector(
   "[data-js=manager-enter-call-button]"
 );

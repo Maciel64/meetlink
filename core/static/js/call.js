@@ -154,10 +154,10 @@ async function createAnswer(offer, senderId, channel) {
 }
 
 videoStartCallButton.addEventListener("click", function () {
-  const protocol = window.location.protocol === "https:" ? "wss://" : "ws://";
-  websocket = new WebSocket(
-    protocol + window.location.hostname + ":8001" + "/ws/meetings"
-  );
+  const { protocol, port, hostname } = window.location;
+  const wssProtocol = protocol === "https:" ? "wss://" : "ws://";
+  const wssPort = wssProtocol === "ws://" ? 8001 : port;
+  websocket = new WebSocket(`${wssProtocol}${hostname}:${port}/ws/meetings`);
 
   websocket.addEventListener("open", function () {
     sendSignal("join", {});
