@@ -157,7 +157,7 @@ videoStartCallButton.addEventListener("click", function () {
   const { protocol, port, hostname } = window.location;
   const wssProtocol = protocol === "https:" ? "wss://" : "ws://";
   const wssPort = wssProtocol === "ws://" ? 8001 : port;
-  websocket = new WebSocket(`${"ws://"}${hostname}:${8001}/ws/meetings`);
+  websocket = new WebSocket(`${wssProtocol}${hostname}:${wssPort}/ws/meetings`);
 
   websocket.addEventListener("open", function () {
     sendSignal("join", {});
