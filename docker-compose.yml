@@ -9,14 +9,21 @@ services:
     volumes:
       - .:/app
       - static_volume:/app/core/staticfiles
+      - ./certbot/conf/:/app/certbot/conf
 
     environment:
       - DEBUG=True
       - PYTHONUNBUFFERED=1
       - DJANGO_SETTINGS_MODULE=core.settings
+      - ENV=${ENV}
 
     networks:
       - meetlink-network
+
+    command:
+      - bash
+      - -c
+      - "python manage.py migrate && python manage.py runserver 0.0.0.0:8000 & /app/start.sh"
 
     depends_on:
       database:
