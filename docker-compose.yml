@@ -9,7 +9,7 @@ services:
     volumes:
       - .:/app
       - static_volume:/app/core/staticfiles
-      - ./certbot/conf/:/app/certbot/conf
+      - ./certbot/conf/:/app/certbot/conf:ro
 
     environment:
       - DEBUG=True
