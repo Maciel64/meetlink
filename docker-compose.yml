@@ -9,6 +9,7 @@ services:
     volumes:
       - .:/app
       - static_volume:/app/core/staticfiles
+      - ./certbot/www/:/var/www/certbot:ro
       - ./certbot/conf/:/app/certbot/conf:ro
 
     environment:
