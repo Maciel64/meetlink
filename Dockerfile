@@ -21,8 +21,6 @@ WORKDIR /app/core/
 
 COPY start.sh /app/start.sh
 
-RUN chmod +x /app/start.sh
-
 RUN python manage.py collectstatic --noinput --clear
 
 EXPOSE 8000 8001 443 80
