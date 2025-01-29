@@ -9,7 +9,7 @@ const callTimeoutTime = 60000;
 /** DOM manipulation */
 const { protocol, port, hostname } = window.location;
 const wssProtocol = protocol === "https:" ? "wss://" : "ws://";
-const wssPort = wssProtocol === "ws://" ? 8001 : port;
+const wssPort = wssProtocol === "ws://" ? 80 : 443;
 const chatSocket = new WebSocket(
   `${wssProtocol}${hostname}:${wssPort}/ws/calls`
 );
