@@ -10,7 +10,9 @@ const callTimeoutTime = 60000;
 const { protocol, port, hostname } = window.location;
 const wssProtocol = protocol === "https:" ? "wss://" : "ws://";
 const wssPort = wssProtocol === "ws://" ? 8001 : port;
-const chatSocket = new WebSocket(`${"ws://"}${hostname}:${8001}/ws/calls`);
+const chatSocket = new WebSocket(
+  `${wssProtocol}${hostname}:${wssPort}/ws/calls`
+);
 
 const attendantEnterCallButton = document.querySelector(
   "[data-js=manager-enter-call-button]"
