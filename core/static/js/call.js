@@ -153,7 +153,9 @@ async function createAnswer(offer, senderId, channel) {
   peer.setLocalDescription(answer);
 }
 
-videoStartCallButton.addEventListener("click", function () {
+videoStartCallButton.addEventListener("click", async function () {
+  await userMedia;
+
   const { protocol, port, hostname } = window.location;
   const wssProtocol = protocol === "https:" ? "wss://" : "ws://";
   const wssPort = wssProtocol === "ws://" ? 8001 : port;
