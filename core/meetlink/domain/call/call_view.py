@@ -25,10 +25,14 @@ def create_call(request):
 
 @login_required
 def calls_index(request):
+    user = request.user
+
+    if user.role not in ["SUPERADMIN", "MANAGER", "INTERPRETER"]:
+        return redirect("/")
+
     call_repository = CallRepository()
     user_repository = UserRepository()
     subject_repository = SubjectRepository()
-    user = request.user
 
     call_service = CallService(call_repository, user_repository, subject_repository)
 
@@ -84,6 +88,11 @@ class CallsEdit(View):
 
     @method_decorator(login_required)
     def get(self, request, id):
+        user = request.user
+
+        if user.role not in ["SUPERADMIN", "MANAGER", "INTERPRETER"]:
+            return redirect("/")
+
         call = self.call_service.get(id)
         subjects = self.subject_repository.get_all()
 

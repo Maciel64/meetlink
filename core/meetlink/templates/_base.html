@@ -13,10 +13,10 @@
     <link rel="stylesheet" href="{% static 'css/_base.css' %}" />
 </head>
 
-<body class="d-flex">
+<body>
     {% if not hide_sidebar %} {% include '_sidebar.html' %} {% endif %}
 
-    <main class="main {% if not hide_sidebar %}ml-108{% endif %}">
+    <main class="main {% if not hide_sidebar %}md:ml-108{% endif %}">
         {% block main %}
         <p>Carregue o bloco 'main'</p>
         {% endblock %}

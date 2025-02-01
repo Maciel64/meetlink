@@ -18,7 +18,6 @@ video {
 
 .main {
   padding: 2rem;
-  width: 100%;
 }
 
 .login__form {
@@ -28,6 +27,11 @@ video {
 .sidebar {
   width: 28rem;
   height: 100vh;
+  display: none;
+
+  @media (min-width: 768px) {
+    display: flex;
+  }
 }
 
 .w-12 {
@@ -176,7 +180,10 @@ video {
     .md\:p-12 {
         padding: 3rem;
     }
-    
+
+    .md\:ml-108 {
+        margin-left: 27rem;
+    }
 
     .main {
         padding: 8rem;
