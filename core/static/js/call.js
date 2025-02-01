@@ -25,6 +25,7 @@ let userMedia = navigator.mediaDevices
   .then((stream) => {
     localStream = stream;
     localVideoDOM.srcObject = localStream;
+    localVideoDOM.classList.remove("placeholder");
   })
   .catch((error) => window.alert(error));
 

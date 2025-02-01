@@ -10,6 +10,7 @@ class CallConsumer(AsyncWebsocketConsumer):
             "MANAGER_ENTERING",
             "INTERPRETER_ENTERING",
             "MANAGER_AND_INTERPRETER_NEEDED",
+            "SOMEONE_FINISHED_CALL",
         )
         self.room_name = "test_room"
         self.room_group_name = f"chat_{self.room_name}"
@@ -66,6 +67,17 @@ class CallConsumer(AsyncWebsocketConsumer):
                 {
                     "event": event["event"],
                     "message": "Gerente e interprete necessários!",
+                    "call": event["data"]["call"],
+                }
+            )
+        )
+
+    async def someone_finished_call(self, event):
+        await self.send(
+            text_data=json.dumps(
+                {
+                    "event": event["event"],
+                    "message": "Alguém finalizou a chamada!",
                     "call": event["data"]["call"],
                 }
             )

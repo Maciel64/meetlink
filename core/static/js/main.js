@@ -10,7 +10,6 @@ const callTimeoutTime = 60000;
 const { protocol, port, hostname } = window.location;
 const wssProtocol = protocol === "https:" ? "wss://" : "ws://";
 const wssPort = wssProtocol === "ws://" ? 8001 : port;
-console.log(`${wssProtocol}${hostname}:${wssPort}/ws/calls`);
 const chatSocket = new WebSocket(
   `${wssProtocol}${hostname}:${wssPort}/ws/calls`
 );
@@ -174,11 +173,13 @@ const eventHandlers = {
     }
   },
 
-  MANAGER_FINISHED_CALL: function (data) {
+  SOMEONE_FINISHED_CALL: function (data) {
     if (userIs(userRole, ["SUPERADMIN", "MANAGER"])) {
       window.location.replace(window.location.origin + `/calls/${call.id}`);
     } else if (userIs(userRole, ["TOTEM"])) {
       window.location.replace(window.location.origin + `/totem`);
+    } else if (userIs(userRole, ["INTERPRETER"])) {
+      window.location.replace(window.location.origin + `/dashboard`);
     }
   },
 };
@@ -195,7 +196,7 @@ function handleEventIncoming(e) {
 }
 
 function handleWebsocketConectionClosed(e) {
-  console.error("Conexão WebSocket fechada inesperadamente");
+  console.error("Conexão WebSocket fechada inesperadamente", e);
 }
 
 function handleWebsocketConectionError(e) {
@@ -208,7 +209,6 @@ async function handleAttendantEnterCallButton() {
   const userId = document.querySelector("[data-js=user-id]").value;
 
   if (userIs(userRole, ["MANAGER", "SUPERADMIN"])) {
-    console.log("Entrou aqui");
     chatSocket.send(JSON.stringify({ event: "MANAGER_ENTERING" }));
     await api.put(`/calls/${call.id}/insert_manager/`, {
       manager_id: userId,
@@ -259,7 +259,9 @@ async function handleRequestCallWithInterpreter() {
 async function handleFinishCallButtonClick() {
   updatedCall = await api.put(`/calls/${callId}/finish/`);
   call = updatedCall;
-  chatSocket.send(JSON.stringify({ event: "MANAGER_FINISHED_CALL" }));
+
+  chatSocket.send(JSON.stringify({ event: "SOMEONE_FINISHED_CALL", call }));
+
   if (userIs(userRole, ["MANAGER", "SUPERADMIN"])) {
     window.location.href = window.location.origin + `/calls/${callId}`;
   } else if (userIs(userRole, ["TOTEM"])) {

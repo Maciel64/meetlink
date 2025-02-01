@@ -142,6 +142,11 @@ video {
         max-height: 80vh;
     }
 
+    .md\:p-12 {
+        padding: 3rem;
+    }
+    
+
     .main {
         padding: 8rem;
       }
