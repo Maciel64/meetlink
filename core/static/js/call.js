@@ -6,7 +6,6 @@ const videoStartCallButton = document.querySelector(
 );
 const videoContainerDOM = document.querySelector("[data-js=video-container]");
 const localVideoDOM = document.querySelector("[data-js=video-local]");
-const showPeersButton = document.querySelector("[data-js=show-peers]");
 
 const serversConfig = {
   iceServers: [

@@ -1,4 +1,5 @@
 from django.contrib.auth.decorators import login_required
+from django.core.paginator import Paginator
 from django.shortcuts import redirect, render
 from django.utils.decorators import method_decorator
 from django.views import View
@@ -33,7 +34,20 @@ def calls_index(request):
 
     calls = call_service.filter_by_user(user.id, user.role, {"created_at": "desc"})
 
-    return render(request, "calls/index.html", {"calls": calls})
+    page: int = request.GET.get("page")
+    per_page: int = request.GET.get("per_page")
+
+    query = {"page": page, "per_page": per_page}
+
+    paginator = Paginator(calls, per_page or 15)
+
+    paginated_calls = paginator.get_page(page or 1)
+
+    return render(
+        request,
+        "calls/index.html",
+        {"paginated_calls": paginated_calls, "query": query},
+    )
 
 
 @login_required

@@ -16,7 +16,7 @@
 <body class="d-flex">
     {% if not hide_sidebar %} {% include '_sidebar.html' %} {% endif %}
 
-    <main class="main">
+    <main class="main {% if not hide_sidebar %}ml-108{% endif %}">
         {% block main %}
         <p>Carregue o bloco 'main'</p>
         {% endblock %}

@@ -1,5 +1,5 @@
 {% load static %}
-<aside class="sidebar shadow-lg p-12 d-flex flex-column align-items-center">
+<aside class="sidebar shadow-lg p-12 d-flex flex-column align-items-center fixed-top">
     <ul class="d-flex flex-column gap-1 h-100">
         <li class="py-12">
             <a href="/">
@@ -15,7 +15,7 @@
         </li>
         <li class="d-flex">
             <a class="rounded-2 w-100 h-100 p-3 text-primary-color hover:text-white hover:bg-primary-color {% if request.path == '/calls/' %}text-white bg-primary-color{% endif %}"
-                href="/calls">
+                href="/calls/?page=1&per_page=10">
                 Histórico de chamadas
             </a>
         </li>

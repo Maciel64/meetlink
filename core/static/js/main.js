@@ -26,6 +26,9 @@ const requestCallWithInterpreterButtonDOM = document.querySelector(
 const finishCallButtonDOM = document.querySelector(
   "[data-js=video-finish-call-button]"
 );
+const accessibilityButtonDOM = document.querySelector(
+  "[data-js=accessibility-button]"
+);
 
 const audioPhoneRing = document.querySelector("[data-js=audio-phone-ring]");
 
@@ -105,6 +108,10 @@ finishCallButtonDOM?.addEventListener("click", handleFinishCallButtonClick);
 requestCallWithInterpreterButtonDOM?.addEventListener(
   "click",
   handleRequestCallWithInterpreter
+);
+accessibilityButtonDOM?.addEventListener(
+  "click",
+  handleAccessibiltyButtonClick
 );
 
 /** Custom Functions */
@@ -269,6 +276,10 @@ async function handleFinishCallButtonClick() {
   } else if (userIs(userRole, ["INTERPRETER"])) {
     window.location.href = window.location.origin + `/dashboard`;
   }
+}
+
+async function handleAccessibiltyButtonClick() {
+  console.log("Necessária implementação");
 }
 
 async function enableAttendantButton() {
