@@ -1,5 +1,6 @@
 :root {
     --primary-color: #113445;
+    --secondary-color: #014963;
 }
 
 a {
@@ -91,6 +92,10 @@ video {
     background-color: var(--primary-color);
 }
 
+.bg-secondary-color {
+    background-color: var(--secondary-color);
+}
+
 .hover\:bg-primary-color:hover {
     transition: background-color 100ms ease;
     background-color: var(--primary-color);
@@ -118,7 +123,7 @@ video {
 }
 
 .text-color-dark-blue {
-    color: #113445;
+    color: var(--primary-color);
 }
 
 .text-color-light-grey {

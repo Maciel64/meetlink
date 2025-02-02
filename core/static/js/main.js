@@ -182,7 +182,9 @@ const eventHandlers = {
 
   SOMEONE_FINISHED_CALL: function (data) {
     if (userIs(userRole, ["SUPERADMIN", "MANAGER"])) {
-      window.location.replace(window.location.origin + `/calls/${call.id}`);
+      window.location.replace(
+        window.location.origin + `/calls/${data.call.id}`
+      );
     } else if (userIs(userRole, ["TOTEM"])) {
       window.location.replace(window.location.origin + `/totem`);
     } else if (userIs(userRole, ["INTERPRETER"])) {
