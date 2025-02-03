@@ -59,12 +59,16 @@ function createVideo(senderId) {
       videoContainerDOM.appendChild(remoteVideo);
     }
 
+    console.log("createVideo =>", remoteVideo);
+
     return remoteVideo;
   }
 }
 
 function setOnTrack(peer, remoteVideo) {
   const remoteMediaStream = new MediaStream();
+
+  console.log("setOnTrack => ", remoteVideo);
 
   remoteVideo.srcObject = remoteMediaStream;
 
@@ -79,6 +83,8 @@ async function createOffer(senderId, channel) {
   addLocalTracks(peer);
 
   const remoteVideo = createVideo(senderId);
+
+  console.log("createOffer =>", remoteVideo);
 
   setOnTrack(peer, remoteVideo);
 
