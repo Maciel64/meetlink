@@ -1,6 +1,7 @@
 /** Helpers */
 
 var call = null;
+var isAccessibilityShown = false;
 
 const callId = document.querySelector("[data-js=call-id]")?.value;
 const userRole = document.querySelector("[data-js=user-role]")?.value;
@@ -12,6 +13,12 @@ const wssProtocol = protocol === "https:" ? "wss://" : "ws://";
 const wssPort = wssProtocol === "ws://" ? 8001 : port;
 const chatSocket = new WebSocket(
   `${wssProtocol}${hostname}:${wssPort}/ws/calls`
+);
+const accessibilityButtonsContainerDOM = document.querySelector(
+  "[data-js=accessibility-buttons-container]"
+);
+const buttonsContainerDOM = document.querySelector(
+  "[data-js=buttons-container]"
 );
 
 const attendantEnterCallButton = document.querySelector(
@@ -126,7 +133,8 @@ const eventHandlers = {
       attendantEnterCallButton &&
       userIs(userRole, ["SUPERADMIN", "MANAGER"])
     ) {
-      attendantEnterCallButton.innerHTML = "Gerente sendo solicitado!";
+      attendantEnterCallButton.innerHTML =
+        "Atendimento em Português solicitado";
       audioPhoneRing.play();
       enableAttendantButton();
 
@@ -147,8 +155,8 @@ const eventHandlers = {
       enableAttendantButton();
       audioPhoneRing.play();
 
-      if (userRole === "MANAGER") {
-        attendantEnterCallButton.innerHTML = "Gerente sendo solicitado";
+      if (userIs(userRole, ["SUPERADMIN", "MANAGER"])) {
+        attendantEnterCallButton.innerHTML = "Atendimento em libras solicitado";
       }
 
       if (userRole === "INTERPRETER") {
@@ -281,7 +289,15 @@ async function handleFinishCallButtonClick() {
 }
 
 async function handleAccessibiltyButtonClick() {
-  console.log("Necessária implementação");
+  isAccessibilityShown = !isAccessibilityShown;
+
+  if (isAccessibilityShown) {
+    accessibilityButtonsContainerDOM.classList.remove("d-hidden");
+    buttonsContainerDOM.classList.add("d-hidden");
+  } else {
+    accessibilityButtonsContainerDOM.classList.add("d-hidden");
+    buttonsContainerDOM.classList.remove("d-hidden");
+  }
 }
 
 async function enableAttendantButton() {

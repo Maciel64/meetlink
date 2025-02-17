@@ -15,6 +15,7 @@
             <th></th>
             <th>Responsável</th>
             <th>Intérprete</th>
+            <th>Assunto</th>
             <th>Início</th>
             <th>Fim</th>
             <th>Visualizar</th>
@@ -25,8 +26,32 @@
         {% for call in paginated_calls %}
         <tr>
             <td>Atendimento #{{ call.id }} - {{ call.created_at|date:"d/m/Y" }}</td>
-            <td>{{ call.responsible }}</td>
-            <td>{{ call.interpreter }}</td>
+            <td>
+                {% if call.responsible %}
+                <span class="p-1 text-success-emphasis bg-success-subtle border border-success-subtle rounded-3">
+                    {{ call.responsible }}
+                </span>
+                {% else %}
+                <span class="p-1 text-danger-emphasis bg-danger-subtle border border-danger-subtle rounded-3">
+                    Chamada perdida
+                </span>
+                {% endif %}
+            </td>
+            <td>
+                {% if call.interpreter %}
+                <span class="p-1 text-success-emphasis bg-success-subtle border border-success-subtle rounded-3">
+                    {{ call.interpreter }}
+                </span>
+                {% else %}
+                -
+                {% endif %}
+            </td>
+            <td>{% if call.subject %}
+                {{ call.subject }}
+                {% else %}
+                -
+                {% endif %}
+            </td>
             <td>{{ call.created_at|time:"H:i" }}</td>
             <td>{{ call.finished_at|time:"H:i" }}</td>
             <td><a class="btn btn-primary" href="/calls/{{ call.id }}">Visualizar</a></td>
