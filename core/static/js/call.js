@@ -59,16 +59,12 @@ function createVideo(senderId) {
       videoContainerDOM.appendChild(remoteVideo);
     }
 
-    console.log("createVideo =>", remoteVideo);
-
     return remoteVideo;
   }
 }
 
 function setOnTrack(peer, remoteVideo) {
   const remoteMediaStream = new MediaStream();
-
-  console.log("setOnTrack => ", remoteVideo);
 
   remoteVideo.srcObject = remoteMediaStream;
 
@@ -83,8 +79,6 @@ async function createOffer(senderId, channel) {
   addLocalTracks(peer);
 
   const remoteVideo = createVideo(senderId);
-
-  console.log("createOffer =>", remoteVideo);
 
   setOnTrack(peer, remoteVideo);
 
@@ -159,7 +153,7 @@ async function createAnswer(offer, senderId, channel) {
   peer.setLocalDescription(answer);
 }
 
-videoStartCallButton.addEventListener("click", async function () {
+(async function init() {
   await userMedia;
 
   const { protocol, port, hostname } = window.location;
@@ -180,8 +174,7 @@ videoStartCallButton.addEventListener("click", async function () {
       createAnswer(sdp, senderId, channel);
     } else if (type === "answer") {
       const peer = peers[senderId][0];
-
       peer.setRemoteDescription(sdp);
     }
   });
-});
+})();
