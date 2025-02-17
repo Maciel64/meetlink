@@ -13,4 +13,5 @@ def view_context(request):
         "SHOULD_VIEW_TOTEM_REDIRECT": user.role in (Role.SUPERADMIN, Role.TOTEM),
         "SHOULD_VIEW_FINISH_CALL_BUTTON": user.role in (Role.SUPERADMIN, Role.MANAGER),
         "CANNOT_EDIT_CALL": user.role not in (Role.SUPERADMIN, Role.MANAGER),
+        "SHOUD_VIEW_SUPERADMIN_REDIRECT": user.role in (Role.SUPERADMIN),
     }

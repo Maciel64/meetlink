@@ -7,6 +7,9 @@ class ICallRepository(Protocol):
     def get(self, call_id: int) -> Call | None:
         pass
 
+    def get_last(self) -> Call | None:
+        pass
+
     def get_all(self, sort: str) -> List[Call]:
         pass
 
@@ -29,6 +32,9 @@ class ICallRepository(Protocol):
 class CallRepository(ICallRepository):
     def get(self, call_id):
         return Call.objects.filter(id=call_id).first()
+
+    def get_last(self):
+        return Call.objects.last()
 
     def get_all(self, sort):
         return Call.objects.all().order_by(sort)

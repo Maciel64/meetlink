@@ -32,6 +32,9 @@ class ICallService(Protocol):
     def get_all(self, sort: Dict) -> List[Call]:
         pass
 
+    def get_last(self) -> Call | None:
+        pass
+
     def filter_by_user(self, user_id: int, user_role: Role, sort: Dict) -> List[Call]:
         pass
 
@@ -71,6 +74,14 @@ class CallService(ICallService):
 
     def get(self, call_id):
         call = self.call_repository.get(call_id)
+
+        if not call:
+            raise CallNotFoundException()
+
+        return call
+
+    def get_last(self):
+        call = self.call_repository.get_last()
 
         if not call:
             raise CallNotFoundException()

@@ -1,5 +1,6 @@
 from django.urls import include, path
 from meetlink.domain.call import call_view
+from meetlink.domain.superadmin import superadmin_view
 from rest_framework.routers import SimpleRouter
 
 from . import views
@@ -23,5 +24,6 @@ urlpatterns = [
     path("calls/<int:id>", call_view.CallsEdit.as_view(), name="calls_edit"),
     path("api/", include(router.urls)),
     path("create_call/", call_view.create_call, name="create_call"),
+    path("superadmin/actions/", superadmin_view.actions, name="create_call"),
     # path("create-superuser/", views.create_superuser, name="create_superuser"),
 ]

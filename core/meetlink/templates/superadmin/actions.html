@@ -1,0 +1,25 @@
+{% extends '_base.html' %}
+
+{% block title %}Tela do Superadmin{% endblock %}
+
+{% load static %}
+
+{% block main %}
+
+<h1 class="mb-5">Tela de Administrador</h1>
+
+{% if not call.finished_at %}
+<button class="p-12 rounded-3 btn btn-primary" data-js="admin-end-call-button">
+    Finalize a chamada {{ call.id }}
+</button>
+{% else %}
+<button class="p-12 rounded-3 btn btn-primary" disabled>
+    Sem chamdas em andamento
+</button>
+{% endif %}
+
+<input type="hidden" data-js="user-id" value="{{ user.id }}">
+<input type="hidden" data-js="user-role" value="{{ user.role }}">
+<input type="hidden" data-js="call-id" value="{{ call.id }}">
+
+{% endblock %}

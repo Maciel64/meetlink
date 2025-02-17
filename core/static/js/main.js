@@ -36,6 +36,9 @@ const finishCallButtonDOM = document.querySelector(
 const accessibilityButtonDOM = document.querySelector(
   "[data-js=accessibility-button]"
 );
+const adminEndCallButtonDOM = document.querySelector(
+  "[data-js=admin-end-call-button]"
+);
 
 const audioPhoneRing = document.querySelector("[data-js=audio-phone-ring]");
 
@@ -108,17 +111,21 @@ chatSocket.onopen = () =>
 
 attendantEnterCallButton?.addEventListener(
   "click",
-  handleAttendantEnterCallButton
+  handleAttendantEnterCallButtonClick
 );
 requestCallButtonDOM?.addEventListener("click", handleRequestCallButtonClick);
 finishCallButtonDOM?.addEventListener("click", handleFinishCallButtonClick);
 requestCallWithInterpreterButtonDOM?.addEventListener(
   "click",
-  handleRequestCallWithInterpreter
+  handleRequestCallWithInterpreterButtonClick
 );
 accessibilityButtonDOM?.addEventListener(
   "click",
   handleAccessibiltyButtonClick
+);
+adminEndCallButtonDOM?.addEventListener(
+  "click",
+  handleAdminFinishedCallButtonClick
 );
 
 /** Custom Functions */
@@ -189,6 +196,8 @@ const eventHandlers = {
   },
 
   SOMEONE_FINISHED_CALL: function (data) {
+    console.log("Chegou no outro cliente");
+
     if (userIs(userRole, ["SUPERADMIN", "MANAGER"])) {
       window.location.replace(
         window.location.origin + `/calls/${data.call.id}`
@@ -220,7 +229,7 @@ function handleWebsocketConectionError(e) {
   console.log("Erro na conexão ", e);
 }
 
-async function handleAttendantEnterCallButton() {
+async function handleAttendantEnterCallButtonClick() {
   attendantEnterCallButton.innerHTML = "Entrando na chamada!";
   attendantEnterCallButton.classList.remove("ring");
   const userId = document.querySelector("[data-js=user-id]").value;
@@ -255,7 +264,7 @@ async function handleRequestCallButtonClick() {
   }, callTimeoutTime);
 }
 
-async function handleRequestCallWithInterpreter() {
+async function handleRequestCallWithInterpreterButtonClick() {
   requestCallButtonDOM.disabled = true;
   requestCallWithInterpreterButtonDOM.disabled = true;
   requestCallWithInterpreterButtonDOM.innerHTML =
@@ -297,6 +306,19 @@ async function handleAccessibiltyButtonClick() {
   } else {
     accessibilityButtonsContainerDOM.classList.add("d-hidden");
     buttonsContainerDOM.classList.remove("d-hidden");
+  }
+}
+
+async function handleAdminFinishedCallButtonClick() {
+  console.log("Apertoun no botão");
+
+  if (userIs(userRole, ["SUPERADMIN"])) {
+    updatedCall = await api.put(`/calls/${callId}/finish/`);
+    call = updatedCall;
+
+    chatSocket.send(
+      JSON.stringify({ event: "SOMEONE_FINISHED_CALL", call: call })
+    );
   }
 }
 

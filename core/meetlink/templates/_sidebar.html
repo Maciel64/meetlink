@@ -27,6 +27,14 @@
             </a>
         </li>
         {% endif %}
+        {% if SHOUD_VIEW_SUPERADMIN_REDIRECT %}
+        <li class="d-flex">
+            <a class="rounded-2 w-100 h-100 p-3 text-primary-color hover:text-white hover:bg-primary-color {% if request.path == '/superadmin/actions/' %}text-white bg-primary-color{% endif %}"
+                href="/superadmin/actions/">
+                Administrador
+            </a>
+        </li>
+        {% endif %}
         <li class="d-flex mt-auto">
             <a class="rounded-2 w-100 h-100 p-3 text-primary-color hover:text-white hover:bg-primary-color {% if request.path == '/logout' %}text-white bg-primary-color{% endif %}"
                 href="/logout">
