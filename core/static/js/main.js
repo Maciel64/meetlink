@@ -2,6 +2,7 @@
 
 var call = null;
 var isAccessibilityShown = false;
+var currentEvent = null;
 
 const callId = document.querySelector("[data-js=call-id]")?.value;
 const userRole = document.querySelector("[data-js=user-role]")?.value;
@@ -102,7 +103,7 @@ chatSocket.onmessage = handleEventIncoming;
 chatSocket.onclose = handleWebsocketConectionClosed;
 chatSocket.onerror = handleWebsocketConectionError;
 chatSocket.onopen = () =>
-  console.log(
+  console.warn(
     "Conectado no servidor websockets => Levou " +
       (new Date() - initialTime + " ms")
   );
@@ -157,18 +158,12 @@ const eventHandlers = {
   MANAGER_AND_INTERPRETER_NEEDED: function (data) {
     if (
       attendantEnterCallButton &&
-      userIs(userRole, ["SUPERADMIN", "MANAGER", "INTERPRETER"])
+      userIs(userRole, ["SUPERADMIN", "MANAGER"])
     ) {
       enableAttendantButton();
       audioPhoneRing.play();
 
-      if (userIs(userRole, ["SUPERADMIN", "MANAGER"])) {
-        attendantEnterCallButton.innerHTML = "Atendimento em libras solicitado";
-      }
-
-      if (userRole === "INTERPRETER") {
-        attendantEnterCallButton.innerHTML = "Intérprete sendo solicitado";
-      }
+      attendantEnterCallButton.innerHTML = "Atendimento em libras solicitado";
 
       setTimeout(function () {
         disableAttendantButton();
@@ -196,8 +191,6 @@ const eventHandlers = {
   },
 
   SOMEONE_FINISHED_CALL: function (data) {
-    console.log("Chegou no outro cliente");
-
     if (userIs(userRole, ["SUPERADMIN", "MANAGER"])) {
       window.location.replace(
         window.location.origin + `/calls/${data.call.id}`
@@ -208,6 +201,28 @@ const eventHandlers = {
       window.location.replace(window.location.origin + `/dashboard`);
     }
   },
+
+  MANAGER_ENTERING_AND_INTERPRETER_NEEDED: function (data) {
+    if (userRole === "INTERPRETER") {
+      attendantEnterCallButton.innerHTML = "Atendimento em libras solicitado";
+
+      enableAttendantButton();
+      audioPhoneRing.play();
+
+      setTimeout(function () {
+        disableAttendantButton();
+        attendantEnterCallButton.innerHTML = "Chamada perdida...";
+      }, callTimeoutTime);
+
+      call = data.call;
+    }
+
+    if (userIs(userRole, ["MANAGER", "SUPERADMIN", "TOTEM"])) {
+      return window.location.replace(
+        window.location.origin + `/calls/${call.id}/in_progress`
+      );
+    }
+  },
 };
 
 function handleEventIncoming(e) {
@@ -215,9 +230,10 @@ function handleEventIncoming(e) {
   const eventIsNotInHandlers = !(data.event in eventHandlers);
 
   if (eventIsNotInHandlers) {
-    return console.error("Evento não registrado: ", event);
+    return console.error("Evento não registrado: ", e);
   }
 
+  currentEvent = data.event;
   eventHandlers[data.event](data);
 }
 
@@ -226,7 +242,7 @@ function handleWebsocketConectionClosed(e) {
 }
 
 function handleWebsocketConectionError(e) {
-  console.log("Erro na conexão ", e);
+  console.error("Erro na conexão ", e);
 }
 
 async function handleAttendantEnterCallButtonClick() {
@@ -235,13 +251,26 @@ async function handleAttendantEnterCallButtonClick() {
   const userId = document.querySelector("[data-js=user-id]").value;
 
   if (userIs(userRole, ["MANAGER", "SUPERADMIN"])) {
-    chatSocket.send(JSON.stringify({ event: "MANAGER_ENTERING" }));
+    if (currentEvent === "MANAGER_AND_INTERPRETER_NEEDED") {
+      chatSocket.send(
+        JSON.stringify({
+          event: "MANAGER_ENTERING_AND_INTERPRETER_NEEDED",
+          call,
+        })
+      );
+    } else {
+      chatSocket.send(JSON.stringify({ event: "MANAGER_ENTERING", call }));
+    }
+
     await api.put(`/calls/${call.id}/insert_manager/`, {
       manager_id: userId,
     });
   }
 
-  if (userIs(userRole, ["INTERPRETER"])) {
+  if (
+    userIs(userRole, ["INTERPRETER"]) &&
+    currentEvent === "MANAGER_ENTERING_AND_INTERPRETER_NEEDED"
+  ) {
     chatSocket.send(JSON.stringify({ event: "INTERPRETER_ENTERING" }));
     await api.put(`/calls/${call.id}/insert_interpreter/`, {
       interpreter_id: userId,
@@ -310,8 +339,6 @@ async function handleAccessibiltyButtonClick() {
 }
 
 async function handleAdminFinishedCallButtonClick() {
-  console.log("Apertoun no botão");
-
   if (userIs(userRole, ["SUPERADMIN"])) {
     updatedCall = await api.put(`/calls/${callId}/finish/`);
     call = updatedCall;
