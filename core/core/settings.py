@@ -216,7 +216,6 @@ CACHES = {
 ASGI_APPLICATION = "core.asgi.application"
 
 CSRF_TRUSTED_ORIGINS = [
-    "https://meetlink.onrender.com",
     "https://totemvirtual.com.br",
     "http://totemvirtual.com.br",
     "https://www.totemvirtual.com.br",

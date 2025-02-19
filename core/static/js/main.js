@@ -15,9 +15,6 @@ const wssPort = wssProtocol === "ws://" ? 8001 : port;
 const chatSocket = new WebSocket(
   `${wssProtocol}${hostname}:${wssPort}/ws/calls`
 );
-const accessibilityButtonsContainerDOM = document.querySelector(
-  "[data-js=accessibility-buttons-container]"
-);
 const buttonsContainerDOM = document.querySelector(
   "[data-js=buttons-container]"
 );
@@ -327,15 +324,18 @@ async function handleFinishCallButtonClick() {
 }
 
 async function handleAccessibiltyButtonClick() {
-  isAccessibilityShown = !isAccessibilityShown;
+  const h1 = document.querySelector("h1");
+  const p = document.querySelector("p");
+  const buttons = document.querySelectorAll(
+    '[data-js="buttons-container"] button'
+  );
 
-  if (isAccessibilityShown) {
-    accessibilityButtonsContainerDOM.classList.remove("d-hidden");
-    buttonsContainerDOM.classList.add("d-hidden");
-  } else {
-    accessibilityButtonsContainerDOM.classList.add("d-hidden");
-    buttonsContainerDOM.classList.remove("d-hidden");
-  }
+  this.classList.toggle("active");
+
+  buttonsContainerDOM.classList.toggle("alternate-layout");
+  h1.classList.toggle("reduced-text");
+  p.classList.toggle("reduced-text");
+  buttons.forEach((button) => button.classList.toggle("enlarged"));
 }
 
 async function handleAdminFinishedCallButtonClick() {
