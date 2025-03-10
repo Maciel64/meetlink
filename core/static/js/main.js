@@ -6,7 +6,7 @@ var currentEvent = null;
 
 const callId = document.querySelector("[data-js=call-id]")?.value;
 const userRole = document.querySelector("[data-js=user-role]")?.value;
-const callTimeoutTime = 60000;
+const callTimeoutTime = 1000 * 10; // seconds delay;
 
 /** DOM manipulation */
 const { protocol, port, hostname } = window.location;
