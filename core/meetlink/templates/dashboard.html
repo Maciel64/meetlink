@@ -17,4 +17,8 @@
 <input type="hidden" data-js="user-id" value="{{ user.id }}">
 <input type="hidden" data-js="user-role" value="{{ user.role }}">
 
+{% block scripts %}
+<script src="{% static 'js/main.js' %}"></script>
+{% endblock %}
+
 {% endblock %}
